@@ -109,16 +109,42 @@ public class Student implements Serializable {
 	}
 	
 	public String printDetails() {
+		if (this.name.length() < 6 || this.surname.length() < 6 || this.address.length() < 6) {
+			return "\nID: " + this.id + 
+					"\nName: " + this.name +
+					"\tSurname: " + this.surname + "     "+
+					"\tAddress: " + this.address +"     "+
+					"\tCourse: " + this.course +
+					"\nGrade1: " + this.grade1 +
+					"\tGrade2: " + this.grade2 +
+					"\tGrade3: " + this.grade3 +
+					"\tGrade4: " + this.grade4 +
+					"\tGPA: " + getAverage(this.grade1, this.grade2, this.grade3, this.grade4) + "%";
+		}
+		
 		return 	"\nID: " + this.id +
-				"\tName: " + this.name +
+				"\nName: " + this.name +
 				"\tSurname: " + this.surname +
-				"\nAddress: " + this.address +
+				"\tAddress: " + this.address +
 				"\tCourse: " + this.course +
 				"\nGrade1: " + this.grade1 +
 				"\tGrade2: " + this.grade2 +
 				"\tGrade3: " + this.grade3 +
 				"\tGrade4: " + this.grade4 +
-				"\tGPA: " + getAverage(this.grade1, this.grade2, this.grade3, this.grade4);
+				"\t\tGPA: " + getAverage(this.grade1, this.grade2, this.grade3, this.grade4) + "%";
+	}
+	
+	public String getStudentDetails() {
+		return "\nID: " + this.id +
+				"\nName: " + this.name +
+				"\nSurname: " + this.surname +
+				"\nAddress: " + this.address +
+				"\nCourse: " + this.course +
+				"\nGrade1: " + this.grade1 +
+				"\nGrade2: " + this.grade2 +
+				"\nGrade3: " + this.grade3 +
+				"\nGrade4: " + this.grade4 +
+				"\nGPA: " + getAverage(this.grade1, this.grade2, this.grade3, this.grade4) + "%";
 	}
 	
 	// Serialise Method
