@@ -109,19 +109,6 @@ public class Student implements Serializable {
 	}
 	
 	public String printDetails() {
-		if (this.name.length() < 6 || this.surname.length() < 6 || this.address.length() < 6) {
-			return "\nID: " + this.id + 
-					"\nName: " + this.name +
-					"\tSurname: " + this.surname + "     "+
-					"\tAddress: " + this.address +"     "+
-					"\tCourse: " + this.course +
-					"\nGrade1: " + this.grade1 +
-					"\tGrade2: " + this.grade2 +
-					"\tGrade3: " + this.grade3 +
-					"\tGrade4: " + this.grade4 +
-					"\tGPA: " + getAverage(this.grade1, this.grade2, this.grade3, this.grade4) + "%";
-		}
-		
 		return 	"\nID: " + this.id +
 				"\nName: " + this.name +
 				"\tSurname: " + this.surname +

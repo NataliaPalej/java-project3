@@ -66,6 +66,7 @@ public class StudentController {
         return null;
     }
     
+    // Initial data for the studentList
     public static List<Student> studentList() {    	
     	List<Student> students = new ArrayList<>();
     	students.add(new Student("1", "Kasia", "Pretty", "Tullamore", "Bachelor of Beauty", 89, 93, 99, 91));
@@ -76,7 +77,6 @@ public class StudentController {
 		students.add(new Student("6", "Monika", "Monikowska", "Monksland", "Bachelor of Hairdressing", 31, 48, 67, 36));
 		students.add(new Student("7", "Kuba", "Kubowski", "Monksland", "Bachelor of Mechanics", 71, 68, 78, 83));
 		return students;
-    	
     }
 
     public List<Student> getStudentList() {

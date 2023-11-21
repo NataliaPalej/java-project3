@@ -310,6 +310,7 @@ public class StudentGUI extends JFrame implements ActionListener {
 		JTextField grade4 = new JTextField(10);		
 		
 		// Create array with labels and their fields
+		// JOptionPane recognizes Strings and treats them as Labels
 		Object[] fields = {
 				"ID: ", id,
 				"Name: ", name,
@@ -347,7 +348,11 @@ public class StudentGUI extends JFrame implements ActionListener {
 	        studentController.add(newStudent);
 
 	        // showMessageDialog to notify user
-	        JOptionPane.showMessageDialog(null, "Student added successfully!");
+	        JOptionPane.showMessageDialog(null, "Student " + nameInput + " added successfully!");
+	        emptyField.setText("\"success\" : Student \" + nameInput + \" added successfully!");
+	    } else if (result == JOptionPane.OK_CANCEL_OPTION) {
+	    	System.out.println("add(): Add new student cancelled.");
+	    	emptyField.setText("\"success\" : Add new student successfully cancelled.");
 	    }
 		
 		
