@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -30,7 +32,9 @@ public class StudentGUI extends JFrame implements ActionListener {
 	JLabel searchLabel = new JLabel("Search:", SwingConstants.CENTER);
 	JTextField searchInput = new JTextField(" ", 20);
 	
-	JTextArea studentListField = new JTextArea(" ", 20, 80);
+	//JTextArea studentListField = new JTextArea(" ", 20, 80);
+	JTable studentTable;
+    DefaultTableModel tableModel;
 	
 	public StudentGUI() {
 		// Set initial data for the list
@@ -50,21 +54,21 @@ public class StudentGUI extends JFrame implements ActionListener {
         c.gridx = 1;
         c.gridy = 1;
         // span over 4 columns
-        c.gridwidth = 4; 
+        c.gridwidth = 10; 
         gridBag.setConstraints(title, c);
         cp.add(title);
         
         // Search Label
         c.gridx = 1;
         c.gridy = 3;
-        c.gridwidth = 2;
+        c.gridwidth = 5;
         gridBag.setConstraints(searchLabel, c);
         cp.add(searchLabel);
         
         // Search Input
-        c.gridx = 3;
+        c.gridx = 6;
         c.gridy = 3;
-        c.gridwidth = 2;
+        c.gridwidth = 5;
         gridBag.setConstraints(searchInput, c);
         cp.add(searchInput);
         
@@ -74,7 +78,7 @@ public class StudentGUI extends JFrame implements ActionListener {
 		getByNameBtn.addActionListener(this);
         c.gridx = 1;
         c.gridy = 4;
-        c.gridwidth = 2;
+        c.gridwidth = 5;
         gridBag.setConstraints(getByNameBtn, c);
         cp.add(getByNameBtn);
         
@@ -82,25 +86,50 @@ public class StudentGUI extends JFrame implements ActionListener {
         getByIDBtn.setBackground(Color.darkGray);
 		getByIDBtn.setForeground(Color.white);
 		getByIDBtn.addActionListener(this);
-        c.gridx = 3;
+        c.gridx = 6;
         c.gridy = 4;
-        c.gridwidth = 2;
+        c.gridwidth = 5;
         gridBag.setConstraints(getByIDBtn, c);
         cp.add(getByIDBtn);
         
         // Empty field for messages
         c.gridx = 1;
         c.gridy = 5;
-        c.gridwidth = 4;
+        c.gridwidth = 10;
         gridBag.setConstraints(emptyField, c);
         cp.add(emptyField);
         
         // Empty space for student list
+        //c.gridx = 1;
+        //c.gridy = 6;
+        //c.gridwidth = 4;
+        //gridBag.setConstraints(studentListField, c);
+        //cp.add(studentListField);
+        
+        // Create table model with column names
+        tableModel = new DefaultTableModel();
+        tableModel.setColumnIdentifiers(new String[]{"ID", "Name", "Surname", "Address", "Course", "Grade1", "Grade2", "Grade3", "Grade4", "GPA"});       
+        // Create JTable with the table model
+        studentTable = new JTable(tableModel);
+        // Adjust column size
+        studentTable.getColumnModel().getColumn(0).setPreferredWidth(5);
+        studentTable.getColumnModel().getColumn(1).setPreferredWidth(80);
+        studentTable.getColumnModel().getColumn(2).setPreferredWidth(100);
+        studentTable.getColumnModel().getColumn(3).setPreferredWidth(100);
+        studentTable.getColumnModel().getColumn(4).setPreferredWidth(150);
+        studentTable.getColumnModel().getColumn(5).setPreferredWidth(30);
+        studentTable.getColumnModel().getColumn(6).setPreferredWidth(30);
+        studentTable.getColumnModel().getColumn(7).setPreferredWidth(30);
+        studentTable.getColumnModel().getColumn(8).setPreferredWidth(30);
+        studentTable.getColumnModel().getColumn(9).setPreferredWidth(40);
+        // Add the table to a scroll pane and adjust size
+        JScrollPane scrollPane = new JScrollPane(studentTable);
+        scrollPane.setPreferredSize(new Dimension(700, 400));
         c.gridx = 1;
         c.gridy = 6;
-        c.gridwidth = 4;
-        gridBag.setConstraints(studentListField, c);
-        cp.add(studentListField);
+        c.gridwidth = 10;
+        gridBag.setConstraints(scrollPane, c);
+        cp.add(scrollPane);
         
         // GET *all* button
         getAllBtn.setBackground(Color.DARK_GRAY);
@@ -108,7 +137,7 @@ public class StudentGUI extends JFrame implements ActionListener {
 		getAllBtn.addActionListener(this);
         c.gridx = 1;
         c.gridy = 7;
-        c.gridwidth = 4;
+        c.gridwidth = 10;
         gridBag.setConstraints(getAllBtn, c);
         cp.add(getAllBtn);
         
@@ -117,7 +146,7 @@ public class StudentGUI extends JFrame implements ActionListener {
 		addBtn.addActionListener(this);
         c.gridx = 1;
         c.gridy = 8;
-        c.gridwidth = 4;
+        c.gridwidth = 10;
         gridBag.setConstraints(addBtn, c);
         cp.add(addBtn);
         
@@ -126,16 +155,16 @@ public class StudentGUI extends JFrame implements ActionListener {
 		updateBtn.addActionListener(this);
         c.gridx = 1;
         c.gridy = 9;
-        c.gridwidth = 2;
+        c.gridwidth = 5;
         gridBag.setConstraints(updateBtn, c);
         cp.add(updateBtn);
         
         // DELETE button
         deleteBtn.setBackground(Color.red);
 		deleteBtn.addActionListener(this);
-        c.gridx = 3;
+        c.gridx = 6;
         c.gridy = 9;
-        c.gridwidth = 2;
+        c.gridwidth = 5;
         gridBag.setConstraints(deleteBtn, c);
         cp.add(deleteBtn);
         
@@ -145,7 +174,7 @@ public class StudentGUI extends JFrame implements ActionListener {
         exitBtn.addActionListener(this);
         c.gridx = 1;
         c.gridy = 10;
-        c.gridwidth = 4;
+        c.gridwidth = 10;
         gridBag.setConstraints(exitBtn, c);
         cp.add(exitBtn);
         
@@ -158,7 +187,7 @@ public class StudentGUI extends JFrame implements ActionListener {
         updateBtn.setPreferredSize(buttonSize);
         deleteBtn.setPreferredSize(buttonSize);
         exitBtn.setPreferredSize(buttonSize);
-        studentListField.setPreferredSize(new Dimension(500, 500));
+        //studentListField.setPreferredSize(new Dimension(500, 500));
         
         // Add margin
         JLabel topMargin = new JLabel(" ");
@@ -242,10 +271,26 @@ public class StudentGUI extends JFrame implements ActionListener {
         
         if (!studentList.isEmpty()) {
         	// Clear existing student list
-            studentListField.setText("");
-            studentListField.setText(studentController.getAll());
+            //studentListField.setText("");
+        	clearTable();
+        	// Add student details to the table model
+            for (Student student : studentList) {
+                tableModel.addRow(new Object[]{
+                        student.getId(),
+                        student.getName(),
+                        student.getSurname(),
+                        student.getAddress(),
+                        student.getCourse(),
+                        student.getGrade1(),
+                        student.getGrade2(),
+                        student.getGrade3(),
+                        student.getGrade4(),
+                        student.getAverage(student.getGrade1(), student.getGrade2(), student.getGrade3(), student.getGrade4()) + "%"
+                });
+            //studentListField.setText(studentController.getAll());
             emptyField.setText("\"success\" : List of all students");
             System.out.println("\"success\" : getAll() \n" + studentController.getAll());
+            }
         } else {
         	emptyField.setText("\"error\" : getAll() List not found or empty. Cannot Deserialize!");
         }
@@ -260,13 +305,26 @@ public class StudentGUI extends JFrame implements ActionListener {
 		} else {
 			 // Get the text from the selectStudent text field
 		    String searchStudent = searchInput.getText();
-		    Student studentExist = studentController.getByID(searchStudent);
+		    Student student = studentController.getByID(searchStudent);
 		    
-		    if (studentExist != null) {
+		    if (student != null) {
 		    	System.out.println("getByID(): Student " + searchStudent + " in the list");
-		    	System.out.println(studentExist.getStudentDetails());
+		    	System.out.println(student.getStudentDetails());
 		    	emptyField.setText("\"success\" : Student " + searchStudent + " was successfully found.");
-	            studentListField.setText(studentExist.getStudentDetails());
+		    	clearTable();
+		    	tableModel.addRow(new Object[]{
+		    			student.getId(),
+		    			student.getName(),
+		    			student.getSurname(),
+		    			student.getAddress(),
+		    			student.getCourse(),
+		    			student.getGrade1(),
+		    			student.getGrade2(),
+	                    student.getGrade3(),
+	                    student.getGrade4(),
+	                    student.getAverage(student.getGrade1(), student.getGrade2(), student.getGrade3(), student.getGrade4()) + "%"
+	            });
+	            //studentListField.setText(studentExist.getStudentDetails());
 		    } else {
 		    	emptyField.setText("\"error\" : Student " + searchStudent + " not in studentsList.");
 		    	System.out.println("getByID(): ID " + searchStudent + " not in the studentList");
@@ -283,13 +341,26 @@ public class StudentGUI extends JFrame implements ActionListener {
 		} else {
 			 // Get the text from the selectStudent text field
 		    String searchStudent = searchInput.getText();
-		    Student studentExist = studentController.getByName(searchStudent);
+		    Student student = studentController.getByName(searchStudent);
 		    
-		    if (studentExist != null) {
+		    if (student != null) {
 		    	System.out.println("getByName(): Student " + searchStudent + " in the list");
-		    	System.out.println(studentExist.getStudentDetails());
+		    	System.out.println(student.getStudentDetails());
 		    	emptyField.setText("\"success\" : Student " + searchStudent + " was successfully found.");
-	            studentListField.setText(studentExist.getStudentDetails());
+		    	clearTable();
+		    	tableModel.addRow(new Object[]{
+		    			student.getId(),
+		    			student.getName(),
+		    			student.getSurname(),
+		    			student.getAddress(),
+		    			student.getCourse(),
+		    			student.getGrade1(),
+		    			student.getGrade2(),
+	                    student.getGrade3(),
+	                    student.getGrade4(),
+	                    student.getAverage(student.getGrade1(), student.getGrade2(), student.getGrade3(), student.getGrade4()) + "%"
+	            });
+	            //studentListField.setText(studentExist.getStudentDetails());
 		    } else {
 		    	System.out.println("getByNameBtn(): Name " + searchStudent + " not in the studentList.");
 		    	emptyField.setText("\"error\" : Student " + searchStudent + " not in the list");
@@ -298,6 +369,8 @@ public class StudentGUI extends JFrame implements ActionListener {
 	}
 	
 	private void add() {
+		List<Student> studentList = getStudentList();
+		
 		// Create input fields for a new student
 		JTextField id = new JTextField(10);
 		JTextField name = new JTextField(10);
@@ -337,10 +410,10 @@ public class StudentGUI extends JFrame implements ActionListener {
 
 	        // Parse grades to doubles
 	        // Parsing to doubles throws unexpected error? Parsed to floats instead
-	        double grade1Input = Float.parseFloat(grade1.getText());
-	        double grade2Input = Float.parseFloat(grade2.getText());
-	        double grade3Input = Float.parseFloat(grade3.getText());
-	        double grade4Input = Float.parseFloat(grade4.getText());
+	        float grade1Input = Float.parseFloat(grade1.getText());
+	        float grade2Input = Float.parseFloat(grade2.getText());
+	        float grade3Input = Float.parseFloat(grade3.getText());
+	        float grade4Input = Float.parseFloat(grade4.getText());
 
 	        // ADd new Student
 	        Student newStudent = new Student(idInput, nameInput, surnameInput, addressInput, courseInput, 
@@ -350,6 +423,22 @@ public class StudentGUI extends JFrame implements ActionListener {
 	        // showMessageDialog to notify user
 	        JOptionPane.showMessageDialog(null, "Student " + nameInput + " added successfully!");
 	        emptyField.setText("\"success\" : Student \" + nameInput + \" added successfully!");
+	        
+	        clearTable();
+	        for (Student student : studentList) {
+		    	tableModel.addRow(new Object[]{
+		    			student.getId(),
+		    			student.getName(),
+		    			student.getSurname(),
+		    			student.getAddress(),
+		    			student.getCourse(),
+		    			student.getGrade1(),
+		    			student.getGrade2(),
+	                    student.getGrade3(),
+	                    student.getGrade4(),
+	                    student.getAverage(student.getGrade1(), student.getGrade2(), student.getGrade3(), student.getGrade4()) + "%"
+	            });
+	        }    
 	    } else if (result == JOptionPane.OK_CANCEL_OPTION) {
 	    	System.out.println("add(): Add new student cancelled.");
 	    	emptyField.setText("\"success\" : Add new student successfully cancelled.");
@@ -369,15 +458,21 @@ public class StudentGUI extends JFrame implements ActionListener {
 			if (result == JOptionPane.YES_OPTION) {
 				studentController.delete(deleteStudent);
 				emptyField.setText("\"success\" : Student " + deleteStudent + " was successfully deleted.");
-				studentListField.setText(studentController.getAll());
+				//studentListField.setText(studentController.getAll());
 			} else if (result == JOptionPane.NO_OPTION) {
 				emptyField.setText("\"success\" : Delete student cancelled.");
-				studentListField.setText(studentController.getAll());
+				//studentListField.setText(studentController.getAll());
 			} 			
 		} catch (Exception e) {
 			emptyField.setText("\"error\" : Couldn't delete student " + deleteStudent + ".");
 		}
 		
+	}
+	
+	private void clearTable() {
+		while (tableModel.getRowCount() > 0) {
+            tableModel.removeRow(0);
+        }
 	}
 	
 	
