@@ -9,15 +9,10 @@ public class TestStudent {
 		// Create array to store students in
 		List<Student> students = new ArrayList<>();
 		
-		// Create and add students to the array
-		students.add(new Student("A123456", "Kasia", "Pretty", "Tullamore", "Bachelor of Beauty", 89, 93, 99, 91));
-		students.add(new Student("A654321", "Dominik", "Dominos", "Tullamore", "Bachelor of Computing", 72, 68, 88, 84));
-		students.add(new Student("A789456", "Adrian", "Diablo", "Athlone", "Bachelor of Computing", 51, 92, 90, 87));
-		students.add(new Student("A987654", "Natalia", "Norman", "Athlone", "Bachelor of Computing", 91, 93, 94, 89));
-		students.add(new Student("A456123", "Slowak", "Golias", "Trim", "Bachelor of Social", 41, 38, 68, 51));
-		students.add(new Student("A654321", "Monika", "Monikowska", "Monksland", "Bachelor of Hairdressing", 31, 48, 67, 36));
-		students.add(new Student("A741852", "Kuba", "Kubowski", "Monksland", "Bachelor of Mechanics", 71, 68, 78, 83));
-			
+		// Create initial data with StudentController class
+		StudentController studentController = new StudentController();
+		students = studentController.studentList();
+		
 		try {
 			studentClass.serialiseStudents(students);
 			System.out.println("TestStudent(): Students successfully serialised.");
