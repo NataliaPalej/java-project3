@@ -2,17 +2,17 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.Serializable;
 import java.util.List;
 
 
 // Natalia Palej A00279259
 
 @SuppressWarnings("serial")
-public class StudentGUI extends JFrame implements ActionListener, Serializable {
+public class StudentGUI extends JFrame implements ActionListener {
 	
 	static Student studentClass = new Student();
-	
+	private StudentController studentController = new StudentController();
+
 	Container cp;
 	GridBagLayout gridBag = new GridBagLayout();
 	GridBagConstraints c = new GridBagConstraints();
@@ -23,15 +23,15 @@ public class StudentGUI extends JFrame implements ActionListener, Serializable {
 	JButton addBtn = new JButton("ADD");
 	JButton updateBtn = new JButton("UPDATE");
 	JButton deleteBtn = new JButton("DELETE");
+	JButton exitBtn = new JButton("EXIT");
 	
 	JLabel title = new JLabel("Students", SwingConstants.CENTER);
-	JLabel l2 = new JLabel(" ", SwingConstants.CENTER);
-	JLabel l3 = new JLabel(" ", SwingConstants.CENTER);
-	JLabel searchLabel = new JLabel("Search: ", SwingConstants.CENTER);
-	
+	JLabel emptyLine = new JLabel("", SwingConstants.CENTER);
+	JLabel searchLabel = new JLabel("Search:", SwingConstants.CENTER);
 	JTextField searchInput = new JTextField(" ", 20);
+	JTextField selectStudent = new JTextField(" ", 20);
 	
-	JPanel studentPanel = new JPanel();
+	JTextArea studentListField = new JTextArea(" ", 20, 80);
 	
 	public StudentGUI() {
 		setTitle("Natalia Palej A0027959");
@@ -41,122 +41,219 @@ public class StudentGUI extends JFrame implements ActionListener, Serializable {
 		cp.setLayout(gridBag);
 		cp.setBackground(Color.white);
 		c.fill = GridBagConstraints.HORIZONTAL;
-
-		getAllBtn.setBackground(Color.DARK_GRAY);
-		getAllBtn.setForeground(Color.white);
-		getAllBtn.addActionListener(this);
-		getByIDBtn.setBackground(Color.darkGray);
-		getByIDBtn.setForeground(Color.white);
-		getByIDBtn.addActionListener(this);
-		getByNameBtn.setBackground(Color.darkGray);
-		getByNameBtn.setForeground(Color.white);
-		getByNameBtn.addActionListener(this);
-		addBtn.setBackground(Color.green);
-		addBtn.addActionListener(this);
-		updateBtn.setBackground(Color.yellow);
-		updateBtn.addActionListener(this);
-		deleteBtn.setBackground(Color.red);
-		deleteBtn.addActionListener(this);
-
+		
 		// Title
 		title.setFont(new Font("Arial", Font.PLAIN, 30));
-		c.gridx = 0;
-		c.gridy = 0;
-		gridBag.setConstraints(title, c);
-		cp.add(title);
-		
-		// Search
-		c.gridx = 0;
-		c.gridy = 1;
-		gridBag.setConstraints(searchLabel, c);
-		cp.add(searchLabel);
-		c.gridx = 1;
-		c.gridy = 1;
-		gridBag.setConstraints(searchInput, c);
-		cp.add(searchInput);
+        c.gridx = 1;
+        c.gridy = 1;
+        // span over 4 columns
+        c.gridwidth = 4; 
+        gridBag.setConstraints(title, c);
+        cp.add(title);
+        
+        // Search Label
+        c.gridx = 1;
+        c.gridy = 3;
+        c.gridwidth = 2;
+        gridBag.setConstraints(searchLabel, c);
+        cp.add(searchLabel);
+        
+        // Search Input
+        c.gridx = 3;
+        c.gridy = 3;
+        c.gridwidth = 2;
+        gridBag.setConstraints(searchInput, c);
+        cp.add(searchInput);
+        
+        // GET by name button
+        getByNameBtn.setBackground(Color.darkGray);
+		getByNameBtn.setForeground(Color.white);
+		getByNameBtn.addActionListener(this);
+        c.gridx = 1;
+        c.gridy = 4;
+        c.gridwidth = 2;
+        gridBag.setConstraints(getByNameBtn, c);
+        cp.add(getByNameBtn);
+        
+        // GET by ID button
+        getByIDBtn.setBackground(Color.darkGray);
+		getByIDBtn.setForeground(Color.white);
+		getByIDBtn.addActionListener(this);
+        c.gridx = 3;
+        c.gridy = 4;
+        c.gridwidth = 2;
+        gridBag.setConstraints(getByIDBtn, c);
+        cp.add(getByIDBtn);
+        
+        // Empty space for student list
+        c.gridx = 1;
+        c.gridy = 5;
+        c.gridwidth = 4;
+        gridBag.setConstraints(studentListField, c);
+        cp.add(studentListField);
+        
+        // GET *all* button
+        getAllBtn.setBackground(Color.DARK_GRAY);
+		getAllBtn.setForeground(Color.white);
+		getAllBtn.addActionListener(this);
+        c.gridx = 1;
+        c.gridy = 6;
+        c.gridwidth = 4;
+        gridBag.setConstraints(getAllBtn, c);
+        cp.add(getAllBtn);
+        
+        // ADD button
+        addBtn.setBackground(Color.green);
+		addBtn.addActionListener(this);
+        c.gridx = 1;
+        c.gridy = 7;
+        c.gridwidth = 4;
+        gridBag.setConstraints(addBtn, c);
+        cp.add(addBtn);
+        
+        // Second search
+        JLabel searchLabel2 = new JLabel("Search:", SwingConstants.CENTER);
+        c.gridx = 1;
+        c.gridy = 8;
+        c.gridwidth = 2;
+        gridBag.setConstraints(searchLabel2, c);
+        cp.add(searchLabel2);
+        
+        // Second search
+        c.gridx = 3;
+        c.gridy = 8;
+        c.gridwidth = 2;
+        gridBag.setConstraints(selectStudent, c);
+        cp.add(selectStudent);
+        
+        // UPDATE button
+        updateBtn.setBackground(Color.yellow);
+		updateBtn.addActionListener(this);
+        c.gridx = 1;
+        c.gridy = 9;
+        c.gridwidth = 2;
+        gridBag.setConstraints(updateBtn, c);
+        cp.add(updateBtn);
+        
+        // DELETE button
+        deleteBtn.setBackground(Color.red);
+		deleteBtn.addActionListener(this);
+        c.gridx = 3;
+        c.gridy = 9;
+        c.gridwidth = 2;
+        gridBag.setConstraints(deleteBtn, c);
+        cp.add(deleteBtn);
+        
+        // EXIT button
+        exitBtn.setBackground(Color.black);
+        exitBtn.setForeground(Color.white);
+        exitBtn.addActionListener(this);
+        c.gridx = 1;
+        c.gridy = 10;
+        c.gridwidth = 4;
+        gridBag.setConstraints(exitBtn, c);
+        cp.add(exitBtn);
+        
+        // Set the same size to all buttons
+        Dimension buttonSize = new Dimension(150, 40);
+        getAllBtn.setPreferredSize(buttonSize);
+        getByIDBtn.setPreferredSize(buttonSize);
+        getByNameBtn.setPreferredSize(buttonSize);
+        addBtn.setPreferredSize(buttonSize);
+        updateBtn.setPreferredSize(buttonSize);
+        deleteBtn.setPreferredSize(buttonSize);
+        exitBtn.setPreferredSize(buttonSize);
+        studentListField.setPreferredSize(new Dimension(500, 500));
+        
+        // Add margin
+        JLabel topMargin = new JLabel(" ");
+        topMargin.setPreferredSize(new Dimension(20, 50));
+        JLabel bottomMargin = new JLabel(" ");
+        bottomMargin.setPreferredSize(new Dimension(20, 50));
+        JLabel rightMargin = new JLabel(" ");
+        rightMargin.setPreferredSize(new Dimension(50, 20));
+        JLabel leftMargin = new JLabel(" ");
+        leftMargin.setPreferredSize(new Dimension(50, 20));
+     
+        c.gridx = 0;
+        c.gridy = 0;
+        c.gridwidth = 1;
+        gridBag.setConstraints(topMargin, c);
+        cp.add(topMargin);
+        
+        c.gridx = 0;
+        c.gridy = 12;
+        c.gridwidth = 1;
+        gridBag.setConstraints(bottomMargin, c);
+        cp.add(bottomMargin);
+        
+        c.gridx = 0;
+        c.gridy = 0;
+        c.gridwidth = 1;
+        gridBag.setConstraints(leftMargin, c);
+        cp.add(leftMargin);
+        
+        c.gridx = 5;
+        c.gridy = 0;
+        c.gridwidth = 1;
+        gridBag.setConstraints(rightMargin, c);
+        cp.add(rightMargin);
+        
 
-		// Empty line between
-		c.gridx = 0;
-		c.gridy = 2;
-		gridBag.setConstraints(l2, c);
-		cp.add(l2);
-
-		// Students panel
-		studentPanel.setLayout(new BoxLayout(studentPanel, BoxLayout.Y_AXIS));
-		c.gridx = 0;
-		c.gridy = 3;
-		gridBag.setConstraints(studentPanel, c);
-		cp.add(studentPanel);
-
-		// GET *all* button
-		c.gridx = 0;
-		c.gridy = 4;
-		gridBag.setConstraints(getAllBtn, c);
-		cp.add(getAllBtn);
-
-		// GET by name button
-		c.gridx = 0;
-		c.gridy = 5;
-		gridBag.setConstraints(getByNameBtn, c);
-		cp.add(getByNameBtn);
-		
-		// GET by ID button
-		c.gridx = 0;
-		c.gridy = 6;
-		gridBag.setConstraints(getByIDBtn, c);
-		cp.add(getByIDBtn);
-		
-		// ADD button
-		c.gridx = 0;
-		c.gridy = 7;
-		gridBag.setConstraints(addBtn, c);
-		cp.add(addBtn);
-
-		// UPDATE button
-		c.gridx = 0;
-		c.gridy = 8;
-		gridBag.setConstraints(updateBtn, c);
-		cp.add(updateBtn);
-		
-		// DELETE button
-		c.gridx = 0;
-		c.gridy = 9;
-		gridBag.setConstraints(deleteBtn, c);
-		cp.add(deleteBtn);
-
-		setSize(900, 900);
-		setVisible(true);
+        
+        pack();
+        // Put frame in the center
+        setLocationRelativeTo(null); 
+        setSize(1000, 1000);
+        setVisible(true);
 	}
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(getAllBtn)) {
-			System.out.println("Show button clicked.");
-			title.setText("Students Table");
-			l2.setText(" ");
-			// Retrieve list of phones
+			System.out.println("\nactionPerformed(): GET ALL button clicked.");
+			
+			// Retrieve list of students from the controller
 			List<Student> studentList = getStudentList();
-			if (!studentList.isEmpty()) {
-				for (Student student : studentList) {
-					// Create new label for each object 
-					JTextField studentDetails = new JTextField(student.printDetails(), SwingConstants.CENTER);
-					// Add the students panel
-					studentPanel.add(studentDetails);
-					System.out.println("actionPerformed():\n" + student.printDetails());
-				}
-				studentPanel.setVisible(true);
+	        
+	        if (!studentList.isEmpty()) {
+	        	// Clear existing student list
+                studentListField.setText("");
+                studentListField.setText(studentController.getAll());
+                System.out.println(studentController.getAll());
+            } else {
+                studentListField.setText("List not found or empty. Cannot Deserialize!");
+            }
+		} else if (e.getSource().equals(getByIDBtn)) {
+			System.out.println("\nactionPerformed(): GET BY ID button clicked.");
+			List<Student> studentList = getStudentList();
+			
+			if(studentList.isEmpty()) {
+				System.out.println("getByIDBtn(): Student list is empty.");
 			} else {
-				l2.setText("\nactionPerformed(): List not found or empty. Cannot Deserialise!");
+				 // Get the text from the selectStudent text field
+			    String searchStudent = selectStudent.getText();
+			    Student studentExist = studentController.getByName(searchStudent);
+			    
+			    if (studentExist != null) {
+			    	System.out.println("getByIDBtn(): Student " + searchStudent + " in the list");
+		            studentListField.setText(studentExist.printDetails());
+			    } else {
+			    	System.out.println("getByIDBtn(): Name not in the studentList");
+			    }
 			}
+		} else if (e.getSource().equals(getByNameBtn)) {
+			System.out.println("\nactionPerformed(): GET BY NAME button clicked.");
+		} else if (e.getSource().equals(addBtn)) {
+			System.out.println("\nactionPerformed(): ADD button clicked.");
+		} else if (e.getSource().equals(updateBtn)) {
+			System.out.println("\nactionPerformed(): UPDATE button clicked.");
 		} else if (e.getSource().equals(deleteBtn)) {
-			System.out.println("\nactionPerformed(): Clear button clicked.");
-			title.setText("Students");
-			l2.setText("-Students List Cleared-");
-			// Delete students list
-			studentPanel.removeAll();
-			studentPanel.setVisible(false);
+			System.out.println("\nactionPerformed(): DELETE button clicked.");
+		} else if (e.getSource().equals(exitBtn)) {
+			System.out.println("\nactionPerformed(): EXIT button clicked.");
 		} else {
-			System.out.println("\nactionPerformed(): Something's wrong");
+			System.out.println("\nactionPerformed(): No action available");
 		}
 	}
 	

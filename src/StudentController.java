@@ -7,6 +7,10 @@ public class StudentController {
     public StudentController() {
         this.studentList = new ArrayList<>();
     }
+    
+    public StudentController(List<Student> studentList) {
+        this.studentList = studentList;
+    }
 
     public void add(Student student) {
         studentList.add(student);
@@ -23,10 +27,13 @@ public class StudentController {
         }
     }
 
-    public void getAll() {
+    public String getAll() {
+    	StringBuilder result = new StringBuilder();
         for (Student student : studentList) {
             System.out.println(student.printDetails());
+            result.append(student.printDetails());
         }
+        return result.toString();
     }
 
     public Student getByName(String name) {
