@@ -12,9 +12,9 @@ import java.util.List;
 public class Student implements Serializable {
 	
 	private String id, name, surname, address, course;
-	private double grade1, grade2, grade3, grade4;
+	private float grade1, grade2, grade3, grade4;
 	
-	Student(String id, String name, String surname, String address, String course, double grade1, double grade2, double grade3, double grade4){
+	Student(String id, String name, String surname, String address, String course, float grade1, float grade2, float grade3, float grade4){
 		this.id = id;
 		this.name = name;
 		this.surname = surname;
@@ -70,40 +70,40 @@ public class Student implements Serializable {
 		this.course = course;
 	}
 	
-	public double getGrade1() {
+	public float getGrade1() {
 		return grade1;
 	}
 	
-	public void setGrade1(double grade1) {
+	public void setGrade1(float grade1) {
 		this.grade1 = grade1;
 	}
 	
-	public double getGrade2() {
+	public float getGrade2() {
 		return grade2;
 	}
 	
-	public void setGrade2(double grade2) {
+	public void setGrade2(float grade2) {
 		this.grade2 = grade2;
 	}
 	
-	public double getGrade3() {
+	public float getGrade3() {
 		return grade3;
 	}
 	
-	public void setGrade3(double grade3) {
+	public void setGrade3(float grade3) {
 		this.grade3 = grade3;
 	}
 	
-	public double getGrade4() {
+	public float getGrade4() {
 		return grade4;
 	}
 	
-	public void setGrade4(double grade4) {
+	public void setGrade4(float grade4) {
 		this.grade4 = grade4;
 	}
 	
-	public double getAverage(double grade, double grade2, double grade3, double grade4) {
-		double average = (grade+grade2+grade3+grade4)/4;
+	public float getAverage(float grade, float grade2, float grade3, float grade4) {
+		float average = (grade+grade2+grade3+grade4)/4;
 		average = Math.round(average*100)/100;
 		return average;
 	}
