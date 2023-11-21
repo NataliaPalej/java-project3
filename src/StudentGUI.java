@@ -4,7 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-
 // Natalia Palej A00279259
 
 @SuppressWarnings("serial")
@@ -25,15 +24,19 @@ public class StudentGUI extends JFrame implements ActionListener {
 	JButton deleteBtn = new JButton("DELETE");
 	JButton exitBtn = new JButton("EXIT");
 	
+	JLabel emptyField = new JLabel(" ", SwingConstants.CENTER);
 	JLabel title = new JLabel("Students", SwingConstants.CENTER);
 	JLabel emptyLine = new JLabel("", SwingConstants.CENTER);
 	JLabel searchLabel = new JLabel("Search:", SwingConstants.CENTER);
 	JTextField searchInput = new JTextField(" ", 20);
-	JTextField selectStudent = new JTextField(" ", 20);
 	
 	JTextArea studentListField = new JTextArea(" ", 20, 80);
 	
 	public StudentGUI() {
+		// Set initial data for the list
+		List<Student> studentList = getStudentList();
+        this.studentController = new StudentController(studentList);
+		
 		setTitle("Natalia Palej A0027959");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -85,9 +88,16 @@ public class StudentGUI extends JFrame implements ActionListener {
         gridBag.setConstraints(getByIDBtn, c);
         cp.add(getByIDBtn);
         
-        // Empty space for student list
+        // Empty field for messages
         c.gridx = 1;
         c.gridy = 5;
+        c.gridwidth = 4;
+        gridBag.setConstraints(emptyField, c);
+        cp.add(emptyField);
+        
+        // Empty space for student list
+        c.gridx = 1;
+        c.gridy = 6;
         c.gridwidth = 4;
         gridBag.setConstraints(studentListField, c);
         cp.add(studentListField);
@@ -97,7 +107,7 @@ public class StudentGUI extends JFrame implements ActionListener {
 		getAllBtn.setForeground(Color.white);
 		getAllBtn.addActionListener(this);
         c.gridx = 1;
-        c.gridy = 6;
+        c.gridy = 7;
         c.gridwidth = 4;
         gridBag.setConstraints(getAllBtn, c);
         cp.add(getAllBtn);
@@ -106,25 +116,10 @@ public class StudentGUI extends JFrame implements ActionListener {
         addBtn.setBackground(Color.green);
 		addBtn.addActionListener(this);
         c.gridx = 1;
-        c.gridy = 7;
+        c.gridy = 8;
         c.gridwidth = 4;
         gridBag.setConstraints(addBtn, c);
         cp.add(addBtn);
-        
-        // Second search
-        JLabel searchLabel2 = new JLabel("Search:", SwingConstants.CENTER);
-        c.gridx = 1;
-        c.gridy = 8;
-        c.gridwidth = 2;
-        gridBag.setConstraints(searchLabel2, c);
-        cp.add(searchLabel2);
-        
-        // Second search
-        c.gridx = 3;
-        c.gridy = 8;
-        c.gridwidth = 2;
-        gridBag.setConstraints(selectStudent, c);
-        cp.add(selectStudent);
         
         // UPDATE button
         updateBtn.setBackground(Color.yellow);
@@ -212,44 +207,22 @@ public class StudentGUI extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(getAllBtn)) {
 			System.out.println("\nactionPerformed(): GET ALL button clicked.");
-			
-			// Retrieve list of students from the controller
-			List<Student> studentList = getStudentList();
-	        
-	        if (!studentList.isEmpty()) {
-	        	// Clear existing student list
-                studentListField.setText("");
-                studentListField.setText(studentController.getAll());
-                System.out.println(studentController.getAll());
-            } else {
-                studentListField.setText("List not found or empty. Cannot Deserialize!");
-            }
+			getAll();
 		} else if (e.getSource().equals(getByIDBtn)) {
 			System.out.println("\nactionPerformed(): GET BY ID button clicked.");
-			List<Student> studentList = getStudentList();
-			
-			if(studentList.isEmpty()) {
-				System.out.println("getByIDBtn(): Student list is empty.");
-			} else {
-				 // Get the text from the selectStudent text field
-			    String searchStudent = selectStudent.getText();
-			    Student studentExist = studentController.getByName(searchStudent);
-			    
-			    if (studentExist != null) {
-			    	System.out.println("getByIDBtn(): Student " + searchStudent + " in the list");
-		            studentListField.setText(studentExist.printDetails());
-			    } else {
-			    	System.out.println("getByIDBtn(): Name not in the studentList");
-			    }
-			}
+			getByID();
 		} else if (e.getSource().equals(getByNameBtn)) {
 			System.out.println("\nactionPerformed(): GET BY NAME button clicked.");
+			getByName();
 		} else if (e.getSource().equals(addBtn)) {
 			System.out.println("\nactionPerformed(): ADD button clicked.");
+			add();
 		} else if (e.getSource().equals(updateBtn)) {
 			System.out.println("\nactionPerformed(): UPDATE button clicked.");
+			update();
 		} else if (e.getSource().equals(deleteBtn)) {
 			System.out.println("\nactionPerformed(): DELETE button clicked.");
+			delete();
 		} else if (e.getSource().equals(exitBtn)) {
 			System.out.println("\nactionPerformed(): EXIT button clicked.");
 		} else {
@@ -261,6 +234,147 @@ public class StudentGUI extends JFrame implements ActionListener {
 	public List<Student> getStudentList() {
 		return studentClass.deserialiseStudents();
 	}
+	
+	// Separate methods for CRUD operations handling
+	private void getAll() {
+		// Retrieve list of students from the controller
+		List<Student> studentList = getStudentList();
+        
+        if (!studentList.isEmpty()) {
+        	// Clear existing student list
+            studentListField.setText("");
+            studentListField.setText(studentController.getAll());
+            emptyField.setText("\"success\" : List of all students");
+            System.out.println("\"success\" : getAll() \n" + studentController.getAll());
+        } else {
+        	emptyField.setText("\"error\" : getAll() List not found or empty. Cannot Deserialize!");
+        }
+	}
+	
+	private void getByID() {
+		List<Student> studentList = getStudentList();
+		
+		if(studentList.isEmpty()) {
+			System.out.println("getByID(): Student list is empty.");
+			emptyField.setText("List of Students is empty!");
+		} else {
+			 // Get the text from the selectStudent text field
+		    String searchStudent = searchInput.getText();
+		    Student studentExist = studentController.getByID(searchStudent);
+		    
+		    if (studentExist != null) {
+		    	System.out.println("getByID(): Student " + searchStudent + " in the list");
+		    	System.out.println(studentExist.getStudentDetails());
+		    	emptyField.setText("\"success\" : Student " + searchStudent + " was successfully found.");
+	            studentListField.setText(studentExist.getStudentDetails());
+		    } else {
+		    	emptyField.setText("\"error\" : Student " + searchStudent + " not in studentsList.");
+		    	System.out.println("getByID(): ID " + searchStudent + " not in the studentList");
+		    }
+		}
+	}
+	
+	private void getByName() {
+		List<Student> studentList = getStudentList();
+		
+		if(studentList.isEmpty()) {
+			System.out.println("getByName(): Student list is empty.");
+			emptyField.setText("List of Students is empty!");
+		} else {
+			 // Get the text from the selectStudent text field
+		    String searchStudent = searchInput.getText();
+		    Student studentExist = studentController.getByName(searchStudent);
+		    
+		    if (studentExist != null) {
+		    	System.out.println("getByName(): Student " + searchStudent + " in the list");
+		    	System.out.println(studentExist.getStudentDetails());
+		    	emptyField.setText("\"success\" : Student " + searchStudent + " was successfully found.");
+	            studentListField.setText(studentExist.getStudentDetails());
+		    } else {
+		    	System.out.println("getByNameBtn(): Name " + searchStudent + " not in the studentList.");
+		    	emptyField.setText("\"error\" : Student " + searchStudent + " not in the list");
+		    }
+		}
+	}
+	
+	private void add() {
+		// Create input fields for a new student
+		JTextField id = new JTextField(10);
+		JTextField name = new JTextField(10);
+		JTextField surname = new JTextField(10);
+		JTextField address = new JTextField(10);
+		JTextField course = new JTextField(10);
+		JTextField grade1 = new JTextField(10);
+		JTextField grade2 = new JTextField(10);
+		JTextField grade3 = new JTextField(10);
+		JTextField grade4 = new JTextField(10);		
+		
+		// Create array with labels and their fields
+		Object[] fields = {
+				"ID: ", id,
+				"Name: ", name,
+				"Surname: ", surname,
+				"Address: ", address,
+				"Course: ", course,
+				"Grade1: ", grade1,
+				"Grade2: ", grade2,
+				"Grade3: ", grade3,
+				"Grade4: ", grade4
+		};
+		
+		// Show the input dialog and get the user's input
+	    int result = JOptionPane.showConfirmDialog(null, fields, "Add Student", JOptionPane.OK_CANCEL_OPTION);
+	    
+	    // Check if the user clicked OK
+	    if (result == JOptionPane.OK_OPTION) {
+	        // Get inputs
+	        String idInput = id.getText();
+	        String nameInput = name.getText();
+	        String surnameInput = surname.getText();
+	        String addressInput = address.getText();
+	        String courseInput = course.getText();
+
+	        // Parse grades to doubles
+	        // Parsing to doubles throws unexpected error? Parsed to floats instead
+	        double grade1Input = Float.parseFloat(grade1.getText());
+	        double grade2Input = Float.parseFloat(grade2.getText());
+	        double grade3Input = Float.parseFloat(grade3.getText());
+	        double grade4Input = Float.parseFloat(grade4.getText());
+
+	        // ADd new Student
+	        Student newStudent = new Student(idInput, nameInput, surnameInput, addressInput, courseInput, 
+	        		grade1Input, grade2Input, grade3Input, grade4Input);
+	        studentController.add(newStudent);
+
+	        // showMessageDialog to notify user
+	        JOptionPane.showMessageDialog(null, "Student added successfully!");
+	    }
+		
+		
+	}
+	
+	private void update() {
+		
+	}
+	
+	private void delete() {
+		String deleteStudent = searchInput.getText();
+		try {
+			int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete " + deleteStudent + "?");
+			if (result == JOptionPane.YES_OPTION) {
+				studentController.delete(deleteStudent);
+				emptyField.setText("\"success\" : Student " + deleteStudent + " was successfully deleted.");
+				studentListField.setText(studentController.getAll());
+			} else if (result == JOptionPane.NO_OPTION) {
+				emptyField.setText("\"success\" : Delete student cancelled.");
+				studentListField.setText(studentController.getAll());
+			} 			
+		} catch (Exception e) {
+			emptyField.setText("\"error\" : Couldn't delete student " + deleteStudent + ".");
+		}
+		
+	}
+	
 	
 	public static void main(String[] args) {
 		new StudentGUI();
