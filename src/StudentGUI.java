@@ -11,6 +11,8 @@ import java.util.List;
 @SuppressWarnings("serial")
 public class StudentGUI extends JFrame implements ActionListener, Serializable {
 	
+	static Student studentClass = new Student();
+	
 	Container cp;
 	GridBagLayout gridBag = new GridBagLayout();
 	GridBagConstraints c = new GridBagConstraints();
@@ -37,6 +39,7 @@ public class StudentGUI extends JFrame implements ActionListener, Serializable {
 		b2.setBackground(Color.red);
 		b2.addActionListener(this);
 
+		// Show all Students Button
 		l1.setFont(new Font("Arial", Font.PLAIN, 30));
 		c.gridx = 0;
 		c.gridy = 0;
@@ -56,6 +59,7 @@ public class StudentGUI extends JFrame implements ActionListener, Serializable {
 		gridBag.setConstraints(studentPanel, c);
 		cp.add(studentPanel);
 
+		// SHOW button
 		c.gridx = 0;
 		c.gridy = 3;
 		gridBag.setConstraints(b1, c);
@@ -67,12 +71,13 @@ public class StudentGUI extends JFrame implements ActionListener, Serializable {
 		gridBag.setConstraints(l3, c);
 		cp.add(l3);
 
+		// CLEAR button
 		c.gridx = 0;
 		c.gridy = 5;
 		gridBag.setConstraints(b2, c);
 		cp.add(b2);
 
-		setSize(800, 500);
+		setSize(900, 900);
 		setVisible(true);
 	}
 	
@@ -97,7 +102,7 @@ public class StudentGUI extends JFrame implements ActionListener, Serializable {
 				l2.setText("actionPerformed(): List not found or empty. Cannot Deserialise!");
 			}
 		} else if (e.getSource().equals(b2)) {
-			System.out.println("Clear button clicked.");
+			System.out.println("actionPerformed(): Clear button clicked.");
 			l1.setText("Show Student Table:");
 			l2.setText("-Students Table Cleared-");
 			// Delete students list
@@ -110,6 +115,10 @@ public class StudentGUI extends JFrame implements ActionListener, Serializable {
 	
 	// Call deserialiseStudents method from Student class
 	public List<Student> getStudentList() {
-		return Student.deserialiseStudents();
+		return studentClass.deserialiseStudents();
+	}
+	
+	public static void main(String[] args) {
+		new StudentGUI();
 	}
 }
