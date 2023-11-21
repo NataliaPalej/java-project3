@@ -17,11 +17,20 @@ public class StudentGUI extends JFrame implements ActionListener, Serializable {
 	GridBagLayout gridBag = new GridBagLayout();
 	GridBagConstraints c = new GridBagConstraints();
 
-	JButton b1 = new JButton("SHOW");
-	JButton b2 = new JButton("CLEAR");
-	JLabel l1 = new JLabel("Show all Students", SwingConstants.CENTER);
+	JButton getAllBtn = new JButton("GET *all*");
+	JButton getByIDBtn = new JButton("GET by ID");
+	JButton getByNameBtn = new JButton("GET by name");
+	JButton addBtn = new JButton("ADD");
+	JButton updateBtn = new JButton("UPDATE");
+	JButton deleteBtn = new JButton("DELETE");
+	
+	JLabel title = new JLabel("Students", SwingConstants.CENTER);
 	JLabel l2 = new JLabel(" ", SwingConstants.CENTER);
 	JLabel l3 = new JLabel(" ", SwingConstants.CENTER);
+	JLabel searchLabel = new JLabel("Search: ", SwingConstants.CENTER);
+	
+	JTextField searchInput = new JTextField(" ", 20);
+	
 	JPanel studentPanel = new JPanel();
 	
 	public StudentGUI() {
@@ -33,49 +42,87 @@ public class StudentGUI extends JFrame implements ActionListener, Serializable {
 		cp.setBackground(Color.white);
 		c.fill = GridBagConstraints.HORIZONTAL;
 
-		b1.setBackground(Color.DARK_GRAY);
-		b1.setForeground(Color.white);
-		b1.addActionListener(this);
-		b2.setBackground(Color.red);
-		b2.addActionListener(this);
+		getAllBtn.setBackground(Color.DARK_GRAY);
+		getAllBtn.setForeground(Color.white);
+		getAllBtn.addActionListener(this);
+		getByIDBtn.setBackground(Color.darkGray);
+		getByIDBtn.setForeground(Color.white);
+		getByIDBtn.addActionListener(this);
+		getByNameBtn.setBackground(Color.darkGray);
+		getByNameBtn.setForeground(Color.white);
+		getByNameBtn.addActionListener(this);
+		addBtn.setBackground(Color.green);
+		addBtn.addActionListener(this);
+		updateBtn.setBackground(Color.yellow);
+		updateBtn.addActionListener(this);
+		deleteBtn.setBackground(Color.red);
+		deleteBtn.addActionListener(this);
 
-		// Show all Students Button
-		l1.setFont(new Font("Arial", Font.PLAIN, 30));
+		// Title
+		title.setFont(new Font("Arial", Font.PLAIN, 30));
 		c.gridx = 0;
 		c.gridy = 0;
-		gridBag.setConstraints(l1, c);
-		cp.add(l1);
+		gridBag.setConstraints(title, c);
+		cp.add(title);
+		
+		// Search
+		c.gridx = 0;
+		c.gridy = 1;
+		gridBag.setConstraints(searchLabel, c);
+		cp.add(searchLabel);
+		c.gridx = 1;
+		c.gridy = 1;
+		gridBag.setConstraints(searchInput, c);
+		cp.add(searchInput);
 
 		// Empty line between
 		c.gridx = 0;
-		c.gridy = 1;
+		c.gridy = 2;
 		gridBag.setConstraints(l2, c);
 		cp.add(l2);
 
 		// Students panel
 		studentPanel.setLayout(new BoxLayout(studentPanel, BoxLayout.Y_AXIS));
 		c.gridx = 0;
-		c.gridy = 2;
+		c.gridy = 3;
 		gridBag.setConstraints(studentPanel, c);
 		cp.add(studentPanel);
 
-		// SHOW button
-		c.gridx = 0;
-		c.gridy = 3;
-		gridBag.setConstraints(b1, c);
-		cp.add(b1);
-
-		// Empty line between
+		// GET *all* button
 		c.gridx = 0;
 		c.gridy = 4;
-		gridBag.setConstraints(l3, c);
-		cp.add(l3);
+		gridBag.setConstraints(getAllBtn, c);
+		cp.add(getAllBtn);
 
-		// CLEAR button
+		// GET by name button
 		c.gridx = 0;
 		c.gridy = 5;
-		gridBag.setConstraints(b2, c);
-		cp.add(b2);
+		gridBag.setConstraints(getByNameBtn, c);
+		cp.add(getByNameBtn);
+		
+		// GET by ID button
+		c.gridx = 0;
+		c.gridy = 6;
+		gridBag.setConstraints(getByIDBtn, c);
+		cp.add(getByIDBtn);
+		
+		// ADD button
+		c.gridx = 0;
+		c.gridy = 7;
+		gridBag.setConstraints(addBtn, c);
+		cp.add(addBtn);
+
+		// UPDATE button
+		c.gridx = 0;
+		c.gridy = 8;
+		gridBag.setConstraints(updateBtn, c);
+		cp.add(updateBtn);
+		
+		// DELETE button
+		c.gridx = 0;
+		c.gridy = 9;
+		gridBag.setConstraints(deleteBtn, c);
+		cp.add(deleteBtn);
 
 		setSize(900, 900);
 		setVisible(true);
@@ -83,9 +130,9 @@ public class StudentGUI extends JFrame implements ActionListener, Serializable {
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource().equals(b1)) {
+		if (e.getSource().equals(getAllBtn)) {
 			System.out.println("Show button clicked.");
-			l1.setText("Students Table");
+			title.setText("Students Table");
 			l2.setText(" ");
 			// Retrieve list of phones
 			List<Student> studentList = getStudentList();
@@ -99,17 +146,17 @@ public class StudentGUI extends JFrame implements ActionListener, Serializable {
 				}
 				studentPanel.setVisible(true);
 			} else {
-				l2.setText("actionPerformed(): List not found or empty. Cannot Deserialise!");
+				l2.setText("\nactionPerformed(): List not found or empty. Cannot Deserialise!");
 			}
-		} else if (e.getSource().equals(b2)) {
-			System.out.println("actionPerformed(): Clear button clicked.");
-			l1.setText("Show Student Table:");
-			l2.setText("-Students Table Cleared-");
+		} else if (e.getSource().equals(deleteBtn)) {
+			System.out.println("\nactionPerformed(): Clear button clicked.");
+			title.setText("Students");
+			l2.setText("-Students List Cleared-");
 			// Delete students list
 			studentPanel.removeAll();
 			studentPanel.setVisible(false);
 		} else {
-			System.out.println("actionPerformed(): Something's wrong");
+			System.out.println("\nactionPerformed(): Something's wrong");
 		}
 	}
 	
