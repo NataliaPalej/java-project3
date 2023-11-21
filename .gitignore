@@ -25,3 +25,4 @@ replay_pid*
 
 # Ignore mp4 
 *.mp4
+/bin/

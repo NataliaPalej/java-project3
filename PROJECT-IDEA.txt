@@ -1,0 +1,21 @@
+choose idea -> student 
+
+choose pattern 
+   -> MVC 
+        Model: Student class, responsible for managing data and logic related to dog
+        View: Student GUI components that display and allow user to interact with Student object
+        Controller: DogController handles user input, communicates with model Student and updates the view based on user choice
+
+   -> Singleton
+       Design for StudentController to ensure that only one instance of the controller is created (avoiding duplicates)
+
+   -> RMI
+       Enablse server-client communication. Facilitates communication between Student GUI and the server [Student/Student Controller]
+
+start implementation
+Student .java 
+- getters/setters -serliazation/deserialization
+StudentController.java
+- CRUD:
+a) add b) delete c) edit d) display all
+e) getByName f) getByID
