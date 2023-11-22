@@ -32,13 +32,16 @@ public class StudentController {
         }
     }
 
-    public void update(Student oldStudent, Student newStudent) {
-        int index = studentList.indexOf(oldStudent);
-        if (index != -1) {
-            studentList.set(index, newStudent);
-        }
+    public void update(Student studentToUpdate, Student updatedStudent) {
+    	for (int i=0; i<studentList.size(); i++) {
+    		if (studentToUpdate.getId().equals(studentList.get(i).getId()) || studentToUpdate.getName().equals(studentList.get(i).getName())) {
+    			studentList.set(i, updatedStudent);
+                return;
+    		}
+    	}
+    	System.out.println("update(): Student not found in the list.");
     }
-
+    
     public String getAll() {
     	StringBuilder result = new StringBuilder();
         for (Student student : studentList) {

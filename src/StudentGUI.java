@@ -273,24 +273,10 @@ public class StudentGUI extends JFrame implements ActionListener {
         	// Clear existing student list
             //studentListField.setText("");
         	clearTable();
-        	// Add student details to the table model
-            for (Student student : studentList) {
-                tableModel.addRow(new Object[]{
-                        student.getId(),
-                        student.getName(),
-                        student.getSurname(),
-                        student.getAddress(),
-                        student.getCourse(),
-                        student.getGrade1(),
-                        student.getGrade2(),
-                        student.getGrade3(),
-                        student.getGrade4(),
-                        student.getAverage(student.getGrade1(), student.getGrade2(), student.getGrade3(), student.getGrade4()) + "%"
-                });
+        	populateTable(studentList);
             //studentListField.setText(studentController.getAll());
             emptyField.setText("\"success\" : List of all students");
             System.out.println("\"success\" : getAll() \n" + studentController.getAll());
-            }
         } else {
         	emptyField.setText("\"error\" : getAll() List not found or empty. Cannot Deserialize!");
         }
@@ -422,42 +408,115 @@ public class StudentGUI extends JFrame implements ActionListener {
 
 	        // showMessageDialog to notify user
 	        JOptionPane.showMessageDialog(null, "Student " + nameInput + " added successfully!");
-	        emptyField.setText("\"success\" : Student \" + nameInput + \" added successfully!");
-	        
-	        clearTable();
-	        for (Student student : studentList) {
-		    	tableModel.addRow(new Object[]{
-		    			student.getId(),
-		    			student.getName(),
-		    			student.getSurname(),
-		    			student.getAddress(),
-		    			student.getCourse(),
-		    			student.getGrade1(),
-		    			student.getGrade2(),
-	                    student.getGrade3(),
-	                    student.getGrade4(),
-	                    student.getAverage(student.getGrade1(), student.getGrade2(), student.getGrade3(), student.getGrade4()) + "%"
-	            });
-	        }    
+	        emptyField.setText("\"success\" : Student " + nameInput + " added successfully!");
+	        studentClass.serialiseStudents(studentList);
+	        populateTable(studentList);
 	    } else if (result == JOptionPane.OK_CANCEL_OPTION) {
 	    	System.out.println("add(): Add new student cancelled.");
 	    	emptyField.setText("\"success\" : Add new student successfully cancelled.");
-	    }
-		
-		
+	    }	
 	}
 	
 	private void update() {
+		String updateStudent = searchInput.getText();
+		List<Student> studentList = getStudentList();
 		
+		// Find the student to update in the list
+		Student studentToUpdate = null;
+	    for (Student student : studentList) {
+	        if (updateStudent.equalsIgnoreCase(student.getName()) || updateStudent.equalsIgnoreCase(student.getId())) {
+	            studentToUpdate = student;
+	            break;
+	        }
+	    }
+
+	    if (studentToUpdate != null) {
+	    	// Create input fields to update student
+			JTextField id = new JTextField(10);
+			JTextField name = new JTextField(10);
+			JTextField surname = new JTextField(10);
+			JTextField address = new JTextField(10);
+			JTextField course = new JTextField(10);
+			JTextField grade1 = new JTextField(10);
+			JTextField grade2 = new JTextField(10);
+			JTextField grade3 = new JTextField(10);
+			JTextField grade4 = new JTextField(10);
+			
+			// Set student values in input fields
+	        id.setText(studentToUpdate.getId());
+	        name.setText(studentToUpdate.getName());
+	        surname.setText(studentToUpdate.getSurname());
+	        address.setText(studentToUpdate.getAddress());
+	        course.setText(studentToUpdate.getCourse());
+	        grade1.setText(String.valueOf(studentToUpdate.getGrade1()));
+	        grade2.setText(String.valueOf(studentToUpdate.getGrade2()));
+	        grade3.setText(String.valueOf(studentToUpdate.getGrade3()));
+	        grade4.setText(String.valueOf(studentToUpdate.getGrade4()));
+	    	
+	        // Array with labels and their fields
+	        Object[] fields = {
+	                "ID: ", id,
+	                "Name: ", name,
+	                "Surname: ", surname,
+	                "Address: ", address,
+	                "Course: ", course,
+	                "Grade1: ", grade1,
+	                "Grade2: ", grade2,
+	                "Grade3: ", grade3,
+	                "Grade4: ", grade4
+	        };
+
+	        int result = JOptionPane.showConfirmDialog(null, fields, "Update Student", JOptionPane.OK_CANCEL_OPTION);
+	        if (result == JOptionPane.OK_OPTION) {
+	            float grade1Input = Float.parseFloat(grade1.getText());
+	            float grade2Input = Float.parseFloat(grade2.getText());
+	            float grade3Input = Float.parseFloat(grade3.getText());
+	            float grade4Input = Float.parseFloat(grade4.getText());
+	            
+	            // Create updated student
+                Student updatedStudent = new Student(
+                        id.getText(),
+                        name.getText(),
+                        surname.getText(),
+                        address.getText(),
+                        course.getText(),
+                        grade1Input,
+                        grade2Input,
+                        grade3Input,
+                        grade4Input
+                );
+
+	            studentController.update(studentToUpdate, updatedStudent);
+
+	            // Show message dialog
+	            JOptionPane.showMessageDialog(null, "Student " + updateStudent + " was updated successfully!");
+	            emptyField.setText("\"success\" : Student " + updateStudent + " updated successfully!");
+
+	            studentClass.serialiseStudents(studentList);
+	            clearTable();
+	            populateTable(studentList);
+	        } else if (result == JOptionPane.CANCEL_OPTION) {
+	            System.out.println("update(): Update student cancelled.");
+	            emptyField.setText("\"success\" : Update student cancelled.");
+	        }
+	    } else {
+	        System.out.println("update(): Student " + updateStudent + " not found for update.");
+	        emptyField.setText("\"error\" : Student " + updateStudent + " not found for update.");
+	    }
 	}
 	
 	private void delete() {
 		String deleteStudent = searchInput.getText();
+		List<Student> studentList = getStudentList();
 		try {
 			int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete " + deleteStudent + "?");
 			if (result == JOptionPane.YES_OPTION) {
 				studentController.delete(deleteStudent);
+				JOptionPane.showMessageDialog(null, "Student " + deleteStudent + " deleted successfully!");
 				emptyField.setText("\"success\" : Student " + deleteStudent + " was successfully deleted.");
+				studentClass.serialiseStudents(studentList);
+				clearTable();
+				populateTable(studentList);
 				//studentListField.setText(studentController.getAll());
 			} else if (result == JOptionPane.NO_OPTION) {
 				emptyField.setText("\"success\" : Delete student cancelled.");
@@ -470,11 +529,28 @@ public class StudentGUI extends JFrame implements ActionListener {
 	}
 	
 	private void clearTable() {
-		while (tableModel.getRowCount() > 0) {
-            tableModel.removeRow(0);
-        }
+		tableModel.setRowCount(0);
 	}
 	
+	private void populateTable(List<Student> studentList) {
+		// Clear existing rows in the table
+	    clearTable();
+	    // Loop through the list and add students to the table
+	    for (Student student : studentList) {
+	        tableModel.addRow(new Object[]{
+	                student.getId(),
+	                student.getName(),
+	                student.getSurname(),
+	                student.getAddress(),
+	                student.getCourse(),
+	                student.getGrade1(),
+	                student.getGrade2(),
+	                student.getGrade3(),
+	                student.getGrade4(),
+	                student.getAverage(student.getGrade1(), student.getGrade2(), student.getGrade3(), student.getGrade4()) + "%"
+	        });
+	    }
+	}
 	
 	public static void main(String[] args) {
 		new StudentGUI();
