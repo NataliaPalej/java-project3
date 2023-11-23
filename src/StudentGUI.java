@@ -9,10 +9,9 @@ import java.util.List;
 // Natalia Palej A00279259
 
 @SuppressWarnings("serial")
-public class StudentGUI extends JFrame implements ActionListener {
+public class StudentGUI extends JFrame implements ActionListener, StudentView  {
 	
-	static Student studentClass = new Student();
-	private StudentController studentController = new StudentController();
+	private StudentController studentController;
 
 	Container cp;
 	GridBagLayout gridBag = new GridBagLayout();
@@ -32,11 +31,12 @@ public class StudentGUI extends JFrame implements ActionListener {
 	JLabel searchLabel = new JLabel("Search:", SwingConstants.CENTER);
 	JTextField searchInput = new JTextField(" ", 20);
 	
-	//JTextArea studentListField = new JTextArea(" ", 20, 80);
 	JTable studentTable;
     DefaultTableModel tableModel;
 	
-	public StudentGUI() {
+	public StudentGUI(StudentController studentController) {
+		this.studentController = studentController;
+		
 		// Set initial data for the list
 		List<Student> studentList = getStudentList();
         this.studentController = new StudentController(studentList);
@@ -44,6 +44,48 @@ public class StudentGUI extends JFrame implements ActionListener {
 		setTitle("Natalia Palej A0027959");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+		// All the GUI layouts, buttons etc in a separate method to make it more readable 
+        setupGUI();
+        
+        pack();
+        // Put frame in the center
+        setLocationRelativeTo(null); 
+        setSize(1000, 1000);
+        setVisible(true);
+        
+        // Run the application
+        run();
+	}
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource().equals(getAllBtn)) {
+			System.out.println("\nactionPerformed(): GET ALL button clicked.");
+			getAll();
+		} else if (e.getSource().equals(getByIDBtn)) {
+			System.out.println("\nactionPerformed(): GET BY ID button clicked.");
+			getByID();
+		} else if (e.getSource().equals(getByNameBtn)) {
+			System.out.println("\nactionPerformed(): GET BY NAME button clicked.");
+			getByName();
+		} else if (e.getSource().equals(addBtn)) {
+			System.out.println("\nactionPerformed(): ADD button clicked.");
+			add();
+		} else if (e.getSource().equals(updateBtn)) {
+			System.out.println("\nactionPerformed(): UPDATE button clicked.");
+			update();
+		} else if (e.getSource().equals(deleteBtn)) {
+			System.out.println("\nactionPerformed(): DELETE button clicked.");
+			delete();
+		} else if (e.getSource().equals(exitBtn)) {
+			System.out.println("\nactionPerformed(): EXIT button clicked.");
+		} else {
+			System.out.println("\nactionPerformed(): No action available");
+		}
+	}
+	
+	// GUI setup - buttons/labels/table/panel
+	private void setupGUI() {
 		cp = getContentPane();
 		cp.setLayout(gridBag);
 		cp.setBackground(Color.white);
@@ -222,53 +264,13 @@ public class StudentGUI extends JFrame implements ActionListener {
         c.gridwidth = 1;
         gridBag.setConstraints(rightMargin, c);
         cp.add(rightMargin);
-        
-
-        
-        pack();
-        // Put frame in the center
-        setLocationRelativeTo(null); 
-        setSize(1000, 1000);
-        setVisible(true);
 	}
 	
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if (e.getSource().equals(getAllBtn)) {
-			System.out.println("\nactionPerformed(): GET ALL button clicked.");
-			getAll();
-		} else if (e.getSource().equals(getByIDBtn)) {
-			System.out.println("\nactionPerformed(): GET BY ID button clicked.");
-			getByID();
-		} else if (e.getSource().equals(getByNameBtn)) {
-			System.out.println("\nactionPerformed(): GET BY NAME button clicked.");
-			getByName();
-		} else if (e.getSource().equals(addBtn)) {
-			System.out.println("\nactionPerformed(): ADD button clicked.");
-			add();
-		} else if (e.getSource().equals(updateBtn)) {
-			System.out.println("\nactionPerformed(): UPDATE button clicked.");
-			update();
-		} else if (e.getSource().equals(deleteBtn)) {
-			System.out.println("\nactionPerformed(): DELETE button clicked.");
-			delete();
-		} else if (e.getSource().equals(exitBtn)) {
-			System.out.println("\nactionPerformed(): EXIT button clicked.");
-		} else {
-			System.out.println("\nactionPerformed(): No action available");
-		}
-	}
-	
-	// Call deserialiseStudents method from Student class
+	// Call deserialiseStudents method from StudentController 
 	public List<Student> getStudentList() {
-		return studentClass.deserialiseStudents();
+		return studentController.deserialiseStudents();
 	}
 	
-	/**
-	 * !!!!!!!!!!!!!!! TO FIX !!!!!!!!!!!!!!!
-	 * GET ALL WHEN UPDATED/ADDED/DELETED DOES NOT FETCH LATEST LIST
-	 * !!!!!!!!!!!!!!! TO FIX !!!!!!!!!!!!!!!
-	 */
 	// Separate methods for CRUD operations handling
 	private void getAll() {
 		// Retrieve list of students from the controller
@@ -276,87 +278,41 @@ public class StudentGUI extends JFrame implements ActionListener {
         
         if (!studentList.isEmpty()) {
         	// Clear existing student list
-            //studentListField.setText("");
         	clearTable();
-        	populateTable(studentList);
-            //studentListField.setText(studentController.getAll());
-            emptyField.setText("\"success\" : List of all students");
+        	showAllStudents(studentList);
+        	showSuccessMessage("List of all students");
             System.out.println("\"success\" : getAll() \n" + studentController.getAll());
         } else {
-        	emptyField.setText("\"error\" : getAll() List not found or empty. Cannot Deserialize!");
+        	showErrorMessage("getAll() List not found or empty. Cannot Deserialize!");
         }
 	}
 	
 	private void getByID() {
-		List<Student> studentList = getStudentList();
-		
-		if(studentList.isEmpty()) {
-			System.out.println("getByID(): Student list is empty.");
-			emptyField.setText("List of Students is empty!");
-		} else {
-			 // Get the text from the selectStudent text field
-		    String searchStudent = searchInput.getText();
-		    Student student = studentController.getByID(searchStudent);
-		    
-		    if (student != null) {
-		    	System.out.println("getByID(): Student " + searchStudent + " in the list");
-		    	System.out.println(student.getStudentDetails());
-		    	emptyField.setText("\"success\" : Student " + searchStudent + " was successfully found.");
-		    	clearTable();
-		    	tableModel.addRow(new Object[]{
-		    			student.getId(),
-		    			student.getName(),
-		    			student.getSurname(),
-		    			student.getAddress(),
-		    			student.getCourse(),
-		    			student.getGrade1(),
-		    			student.getGrade2(),
-	                    student.getGrade3(),
-	                    student.getGrade4(),
-	                    student.getAverage(student.getGrade1(), student.getGrade2(), student.getGrade3(), student.getGrade4()) + "%"
-	            });
-	            //studentListField.setText(studentExist.getStudentDetails());
-		    } else {
-		    	emptyField.setText("\"error\" : Student " + searchStudent + " not in studentsList.");
-		    	System.out.println("getByID(): ID " + searchStudent + " not in the studentList");
-		    }
+		// Get the text from the selectStudent text field
+		String searchStudent = searchInput.getText();
+		try {
+			Student student = studentController.getByID(searchStudent);
+			showSuccessMessage("Student " + student.getId() + " " + student.getName() + " successfully fetched");
+			showStudentDetails(student);
+		} catch (Exception e) {
+			showErrorMessage("Student " + searchStudent + " not in the list.");
+			System.out.println("Student " + searchStudent + " not in the list.");
 		}
+		
 	}
 	
 	private void getByName() {
-		List<Student> studentList = getStudentList();
-		
-		if(studentList.isEmpty()) {
-			System.out.println("getByName(): Student list is empty.");
-			emptyField.setText("List of Students is empty!");
-		} else {
-			 // Get the text from the selectStudent text field
-		    String searchStudent = searchInput.getText();
-		    Student student = studentController.getByName(searchStudent);
-		    
-		    if (student != null) {
-		    	System.out.println("getByName(): Student " + searchStudent + " in the list");
-		    	System.out.println(student.getStudentDetails());
-		    	emptyField.setText("\"success\" : Student " + searchStudent + " was successfully found.");
-		    	clearTable();
-		    	tableModel.addRow(new Object[]{
-		    			student.getId(),
-		    			student.getName(),
-		    			student.getSurname(),
-		    			student.getAddress(),
-		    			student.getCourse(),
-		    			student.getGrade1(),
-		    			student.getGrade2(),
-	                    student.getGrade3(),
-	                    student.getGrade4(),
-	                    student.getAverage(student.getGrade1(), student.getGrade2(), student.getGrade3(), student.getGrade4()) + "%"
-	            });
-	            //studentListField.setText(studentExist.getStudentDetails());
-		    } else {
-		    	System.out.println("getByNameBtn(): Name " + searchStudent + " not in the studentList.");
-		    	emptyField.setText("\"error\" : Student " + searchStudent + " not in the list");
-		    }
+		// Get the text from the selectStudent text field
+		String searchStudent = searchInput.getText();
+		try {
+			Student student = studentController.getByName(searchStudent);
+			showSuccessMessage("Student " + searchStudent + " successfully fetched");		
+			showStudentDetails(student);
+		} catch (Exception e) {
+			showErrorMessage("Student " + searchStudent + " not in the list.");
+			System.out.println("Student " + searchStudent + " not in the list.");
 		}
+		
 	}
 	
 	private void add() {
@@ -393,32 +349,31 @@ public class StudentGUI extends JFrame implements ActionListener {
 	    // Check if the user clicked OK
 	    if (result == JOptionPane.OK_OPTION) {
 	        // Get inputs
-	        String idInput = id.getText();
-	        String nameInput = name.getText();
-	        String surnameInput = surname.getText();
-	        String addressInput = address.getText();
-	        String courseInput = course.getText();
+	        String idText = id.getText();
+	        String nameText = name.getText();
+	        String surnameText = surname.getText();
+	        String addressText = address.getText();
+	        String courseText = course.getText();
 
 	        // Parse grades to doubles
 	        // Parsing to doubles throws unexpected error? Parsed to floats instead
-	        float grade1Input = Float.parseFloat(grade1.getText());
-	        float grade2Input = Float.parseFloat(grade2.getText());
-	        float grade3Input = Float.parseFloat(grade3.getText());
-	        float grade4Input = Float.parseFloat(grade4.getText());
+	        float grade1Text = Float.parseFloat(grade1.getText());
+	        float grade2Text = Float.parseFloat(grade2.getText());
+	        float grade3Text = Float.parseFloat(grade3.getText());
+	        float grade4Text = Float.parseFloat(grade4.getText());
 
 	        // ADd new Student
-	        Student newStudent = new Student(idInput, nameInput, surnameInput, addressInput, courseInput, 
-	        		grade1Input, grade2Input, grade3Input, grade4Input);
+	        Student newStudent = new Student(idText, nameText, surnameText, addressText, courseText, 
+	        		grade1Text, grade2Text, grade3Text, grade4Text);
 	        studentController.add(newStudent);
 
 	        // showMessageDialog to notify user
-	        JOptionPane.showMessageDialog(null, "Student " + nameInput + " added successfully!");
-	        emptyField.setText("\"success\" : Student " + nameInput + " added successfully!");
-	        studentClass.serialiseStudents(studentList);
-	        populateTable(studentList);
+	        JOptionPane.showMessageDialog(null, "Student " + nameText + " added successfully!");
+	        showSuccessMessage("Student " + nameText + " added successfully!");
+	        showAllStudents(studentList);
 	    } else if (result == JOptionPane.OK_CANCEL_OPTION) {
 	    	System.out.println("add(): Add new student cancelled.");
-	    	emptyField.setText("\"success\" : Add new student successfully cancelled.");
+	    	showSuccessMessage("Add new student successfully cancelled.");
 	    }	
 	}
 	
@@ -473,10 +428,10 @@ public class StudentGUI extends JFrame implements ActionListener {
 
 	        int result = JOptionPane.showConfirmDialog(null, fields, "Update Student", JOptionPane.OK_CANCEL_OPTION);
 	        if (result == JOptionPane.OK_OPTION) {
-	            float grade1Input = Float.parseFloat(grade1.getText());
-	            float grade2Input = Float.parseFloat(grade2.getText());
-	            float grade3Input = Float.parseFloat(grade3.getText());
-	            float grade4Input = Float.parseFloat(grade4.getText());
+	            float grade1Text = Float.parseFloat(grade1.getText());
+	            float grade2Text = Float.parseFloat(grade2.getText());
+	            float grade3Text = Float.parseFloat(grade3.getText());
+	            float grade4Text = Float.parseFloat(grade4.getText());
 	            
 	            // Create updated student
                 Student updatedStudent = new Student(
@@ -485,19 +440,17 @@ public class StudentGUI extends JFrame implements ActionListener {
                         surname.getText(),
                         address.getText(),
                         course.getText(),
-                        grade1Input,
-                        grade2Input,
-                        grade3Input,
-                        grade4Input
+                        grade1Text,
+                        grade2Text,
+                        grade3Text,
+                        grade4Text
                 );
 
 	            studentController.update(studentToUpdate, updatedStudent);
 
 	            // Show message dialog
 	            JOptionPane.showMessageDialog(null, "Student " + updateStudent + " was updated successfully!");
-	            emptyField.setText("\"success\" : Student " + updateStudent + " updated successfully!");
-
-	            studentClass.serialiseStudents(studentList);
+	            showSuccessMessage("Student " + updateStudent + " updated successfully!");
 	            
 	            clearTable();
 		    	tableModel.addRow(new Object[]{
@@ -514,11 +467,11 @@ public class StudentGUI extends JFrame implements ActionListener {
 	            });
 	        } else if (result == JOptionPane.CANCEL_OPTION) {
 	            System.out.println("update(): Update student cancelled.");
-	            emptyField.setText("\"success\" : Update student cancelled.");
+	            showSuccessMessage("Update student cancelled.");
 	        }
 	    } else {
 	        System.out.println("update(): Student " + updateStudent + " not found for update.");
-	        emptyField.setText("\"error\" : Student " + updateStudent + " not found for update.");
+	        showErrorMessage("Student " + updateStudent + " not found for update.");
 	    }
 	}
 	
@@ -530,17 +483,14 @@ public class StudentGUI extends JFrame implements ActionListener {
 			if (result == JOptionPane.YES_OPTION) {
 				studentController.delete(deleteStudent);
 				JOptionPane.showMessageDialog(null, "Student " + deleteStudent + " deleted successfully!");
-				emptyField.setText("\"success\" : Student " + deleteStudent + " was successfully deleted.");
-				studentClass.serialiseStudents(studentList);
+				showSuccessMessage("Student " + deleteStudent + " was successfully deleted.");
 				clearTable();
-				populateTable(studentList);
-				//studentListField.setText(studentController.getAll());
+				showAllStudents(studentList);
 			} else if (result == JOptionPane.NO_OPTION) {
-				emptyField.setText("\"success\" : Delete student cancelled.");
-				//studentListField.setText(studentController.getAll());
+				showSuccessMessage("Delete student cancelled.");
 			} 			
 		} catch (Exception e) {
-			emptyField.setText("\"error\" : Couldn't delete student " + deleteStudent + ".");
+			showErrorMessage("Couldn't delete student " + deleteStudent + ".");
 		}
 		
 	}
@@ -549,7 +499,18 @@ public class StudentGUI extends JFrame implements ActionListener {
 		tableModel.setRowCount(0);
 	}
 	
-	private void populateTable(List<Student> studentList) {
+	// Initialize student controller
+	public void setStudentController(StudentController studentController) {
+	    this.studentController = studentController;
+	}
+	
+	public void run() {
+        getAll();
+        setVisible(true);
+    }
+	
+	@Override
+	public void showAllStudents(List<Student> studentList) {
 		// Clear existing rows in the table
 	    clearTable();
 	    // Loop through the list and add students to the table
@@ -568,8 +529,50 @@ public class StudentGUI extends JFrame implements ActionListener {
 	        });
 	    }
 	}
-	
-	public static void main(String[] args) {
-		new StudentGUI();
+
+	@Override
+	public void showStudentDetails(Student student) {
+		List<Student> studentList = getStudentList();
+		if (studentList.isEmpty()) {
+	        System.out.println("showStudentDetails(): Student list is empty.");
+	        showMessage("List of Students is empty!");
+		} else { 
+			if (student != null) {
+	            System.out.println("showStudentDetails(): Student " + student.getId() + " " + student.getName() + " in the list");
+	            System.out.println(student.getStudentDetails());
+	            showSuccessMessage("Student " + student.getId() + " was successfully found.");
+	            clearTable();
+	            tableModel.addRow(new Object[]{
+	                    student.getId(),
+	                    student.getName(),
+	                    student.getSurname(),
+	                    student.getAddress(),
+	                    student.getCourse(),
+	                    student.getGrade1(),
+	                    student.getGrade2(),
+	                    student.getGrade3(),
+	                    student.getGrade4(),
+	                    student.getAverage(student.getGrade1(), student.getGrade2(), student.getGrade3(), student.getGrade4()) + "%"
+	            });
+	        } else {
+	        	showErrorMessage("Student not found in studentsList.");
+	            System.out.println("showStudentDetails(): Student not found in the studentList.");
+	        }
+		}
+	}
+
+	@Override
+	public void showMessage(String message) {
+		emptyField.setText(message);
+	}
+
+	@Override
+	public void showSuccessMessage(String message) {
+		showMessage("\"success\" : " + message);
+	}
+
+	@Override
+	public void showErrorMessage(String message) {
+		showMessage("\"error\" : " + message);
 	}
 }
