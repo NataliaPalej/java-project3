@@ -264,6 +264,11 @@ public class StudentGUI extends JFrame implements ActionListener {
 		return studentClass.deserialiseStudents();
 	}
 	
+	/**
+	 * !!!!!!!!!!!!!!! TO FIX !!!!!!!!!!!!!!!
+	 * GET ALL WHEN UPDATED/ADDED/DELETED DOES NOT FETCH LATEST LIST
+	 * !!!!!!!!!!!!!!! TO FIX !!!!!!!!!!!!!!!
+	 */
 	// Separate methods for CRUD operations handling
 	private void getAll() {
 		// Retrieve list of students from the controller
@@ -493,8 +498,20 @@ public class StudentGUI extends JFrame implements ActionListener {
 	            emptyField.setText("\"success\" : Student " + updateStudent + " updated successfully!");
 
 	            studentClass.serialiseStudents(studentList);
+	            
 	            clearTable();
-	            populateTable(studentList);
+		    	tableModel.addRow(new Object[]{
+		    			updatedStudent.getId(),
+		    			updatedStudent.getName(),
+		    			updatedStudent.getSurname(),
+		    			updatedStudent.getAddress(),
+		    			updatedStudent.getCourse(),
+		    			updatedStudent.getGrade1(),
+		    			updatedStudent.getGrade2(),
+		    			updatedStudent.getGrade3(),
+		    			updatedStudent.getGrade4(),
+		    			updatedStudent.getAverage(updatedStudent.getGrade1(), updatedStudent.getGrade2(), updatedStudent.getGrade3(), updatedStudent.getGrade4()) + "%"
+	            });
 	        } else if (result == JOptionPane.CANCEL_OPTION) {
 	            System.out.println("update(): Update student cancelled.");
 	            emptyField.setText("\"success\" : Update student cancelled.");

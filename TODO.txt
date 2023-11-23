@@ -4,6 +4,6 @@ iterate throguh the list as there might be more than one student with the same n
 -> delete the table as it seems to be too complicated, leave it as input field.
 -> adjust the code accordingly to what it used to be before (or copy from GIT)
 
-Implement UPDATE method based on ADD OptionPane
+Implement UPDATE method based on ADD OptionPane - DONE
 
 -> investigate GUI to split to MVC pattern
