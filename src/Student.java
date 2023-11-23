@@ -1,18 +1,12 @@
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 // A00279259 Natalia Palej
 
-@SuppressWarnings("serial")
 public class Student implements Serializable {
 	
 	private String id, name, surname, address, course;
 	private float grade1, grade2, grade3, grade4;
+	private static final long serialVersionUID = 1L;
 	
 	Student(String id, String name, String surname, String address, String course, float grade1, float grade2, float grade3, float grade4){
 		this.id = id;
@@ -132,50 +126,5 @@ public class Student implements Serializable {
 				"\nGrade3: " + this.grade3 +
 				"\nGrade4: " + this.grade4 +
 				"\nGPA: " + getAverage(this.grade1, this.grade2, this.grade3, this.grade4) + "%";
-	}
-	
-	// Serialise Method
-	public void serialiseStudents(List<Student> students) {
-		try {
-			// Serialise to the file
-			FileOutputStream fileOut = new FileOutputStream("students.ser");
-			// Assign what object to serialise
-			ObjectOutputStream objOut = new ObjectOutputStream(fileOut);
-			// Loop through phones array
-			for (Student s : students) {
-				objOut.writeObject(s);
-			}
-			objOut.close();
-			fileOut.close();
-		} catch (Exception e) {
-			System.out.println("Exception cought.\n");
-			e.printStackTrace();
-		}
-	}
-	
-	// Deserialise method
-	public List<Student> deserialiseStudents() {
-		List<Student> students = new ArrayList<>();
-		try {
-			FileInputStream fileIn = new FileInputStream("students.ser");
-			ObjectInputStream objIn = new ObjectInputStream(fileIn);
-			
-			// Loop until end of file is reached
-			while (true) {
-                try {
-                	Student s = (Student) objIn.readObject();
-                	students.add(s);
-                } catch (Exception e) {
-                	//System.out.println("\n# End of File Reached#\n");
-                    break; 
-                }
-            }
-			objIn.close();
-			fileIn.close();
-		} catch (Exception e) {
-			System.out.println("Couldn't deserialize the file!");
-			e.printStackTrace();
-		}
-		return students;
 	}
 }

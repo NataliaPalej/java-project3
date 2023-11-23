@@ -1,3 +1,7 @@
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -6,10 +10,14 @@ public class StudentController {
 	private List<Student> studentList;
 
     public StudentController() {
-        this.studentList = new ArrayList<>();
+    	this.studentList = studentList();
     }
     
     public StudentController(List<Student> studentList) {
+        this.studentList = studentList;
+    }
+    
+    public StudentController(List<Student> studentList, StudentGUI studentGUI) {
         this.studentList = studentList;
     }
 
@@ -85,5 +93,49 @@ public class StudentController {
     public List<Student> getStudentList() {
         return studentList;
     }
-
+    
+    // Serialise Method
+ 	public void serialiseStudents(List<Student> students) {
+ 		try {
+ 			// Serialise to the file
+ 			FileOutputStream fileOut = new FileOutputStream("students.ser");
+ 			// Assign what object to serialise
+ 			ObjectOutputStream objOut = new ObjectOutputStream(fileOut);
+ 			// Loop through phones array
+ 			for (Student s : students) {
+ 				objOut.writeObject(s);
+ 			}
+ 			objOut.close();
+ 			fileOut.close();
+ 		} catch (Exception e) {
+ 			System.out.println("Exception cought.\n");
+ 			e.printStackTrace();
+ 		}
+ 	}
+ 	
+ 	// Deserialise method
+ 	public List<Student> deserialiseStudents() {
+ 		List<Student> students = new ArrayList<>();
+ 		try {
+ 			FileInputStream fileIn = new FileInputStream("students.ser");
+ 			ObjectInputStream objIn = new ObjectInputStream(fileIn);
+ 			
+ 			// Loop until end of file is reached
+ 			while (true) {
+                 try {
+                 	Student s = (Student) objIn.readObject();
+                 	students.add(s);
+                 } catch (Exception e) {
+                 	//System.out.println("\n# End of File Reached#\n");
+                     break; 
+                 }
+             }
+ 			objIn.close();
+ 			fileIn.close();
+ 		} catch (Exception e) {
+ 			System.out.println("Couldn't deserialize the file!");
+ 			e.printStackTrace();
+ 		}
+ 		return students;
+ 	}
 }
