@@ -6,15 +6,14 @@ public class TestStudent {
 	static Student studentClass = new Student();
 	
 	public static void main(String[] args) {
-		// Create array to store students in
-		List<Student> students = new ArrayList<>();
+		// Create array to store students in (using initial data created in StudentController)
+        List<Student> studentList = StudentController.studentList();
 		
-		// Create initial data with StudentController class
-		StudentController studentController = new StudentController();
-		students = studentController.studentList();
-		
+        StudentController studentController = new StudentController();
+        StudentGUI studentGUI = new StudentGUI(studentController);
+
 		try {
-			studentClass.serialiseStudents(students);
+			studentController.serialiseStudents(studentList);
 			System.out.println("TestStudent(): Students successfully serialised.");
 		} catch (Exception e) {
 			System.out.println("TestStudent(): Couldn't serialize.\nError: ");
@@ -26,7 +25,7 @@ public class TestStudent {
 		// Deserializing
 		System.out.println("TestStudent(): Deserializing Students");
 		// Create list for deserialization 
-		List<Student> deserialize = studentClass.deserialiseStudents();
+		List<Student> deserialize = studentController.deserialiseStudents();
 		System.out.println("printDetails():");
 		for (Student student : deserialize) {
 			System.out.println(student.printDetails());
@@ -34,13 +33,12 @@ public class TestStudent {
 		
 		System.out.println("\n--------------------------------------------------------------------------------------------------------------------\n");
 		
+		// Set the controller for the GUI
+        studentGUI.setStudentController(studentController);
+        System.out.println("setStudentController(): Student Controller Set");
+
+        // Start your application
+        
+        System.out.println("run(): StudentGUI runs");
 	}
-
-	
-	
-	
-	
-	
-	
-
 }
