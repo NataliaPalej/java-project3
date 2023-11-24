@@ -1,11 +1,11 @@
-import java.util.ArrayList;
+import java.rmi.RemoteException;
 import java.util.List;
 
 public class TestStudent {
 	
 	static Student studentClass = new Student();
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws RemoteException {
 		// Create array to store students in (using initial data created in StudentController)
         List<Student> studentList = StudentController.studentList();
 		
