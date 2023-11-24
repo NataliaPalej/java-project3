@@ -1,7 +1,10 @@
+/**
+ * author @NataliaPalej A00279259
+ */
+
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.List;
 
 public class StudentClient {
 	
@@ -9,14 +12,12 @@ public class StudentClient {
 	
 	public static void main(String[] args) throws RemoteException {
 		
-		System.out.println("StudentClient: starting\n");
-		Registry registry = null;
-		
+		System.out.println("StudentClient: starting\n");	
 		try {
 			System.out.println("\n------------------------------------------------------------------------------------\n");
 			
 			// Get registry]
-			registry = LocateRegistry.getRegistry("localhost", 1099);		
+			Registry registry = LocateRegistry.getRegistry("localhost", 1099);		
 			
 	        // getInstance() to get singleton instance of StudentController
 	        StudentController studentController = StudentController.getInstance();

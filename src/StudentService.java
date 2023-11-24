@@ -1,3 +1,7 @@
+/**
+ * author @NataliaPalej A00279259
+ */
+
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 

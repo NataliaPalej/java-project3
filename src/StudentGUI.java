@@ -1,13 +1,15 @@
+/**
+ * author @NataliaPalej A00279259
+ */
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.util.List;
 
-// Natalia Palej A00279259
 
 @SuppressWarnings("serial")
 public class StudentGUI extends JFrame implements ActionListener, StudentView  {

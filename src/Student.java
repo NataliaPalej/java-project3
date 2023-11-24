@@ -1,6 +1,8 @@
-import java.io.Serializable;
+/**
+ * author @NataliaPalej A00279259
+ */
 
-// A00279259 Natalia Palej
+import java.io.Serializable;
 
 public class Student implements Serializable {
 	

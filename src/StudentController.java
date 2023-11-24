@@ -1,3 +1,7 @@
+/**
+ * author @NataliaPalej A00279259
+ */
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;

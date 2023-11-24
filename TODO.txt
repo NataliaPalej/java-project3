@@ -1,9 +1,0 @@
-Extra:
-SEARCH BY NAME METHOD:
-iterate throguh the list as there might be more than one student with the same name
-
-Implement UPDATE method based on ADD OptionPane - DONE
-Implement MVC design pattern: StudentGUI, StudentController, StudentView (interface) - DONE
-
-Implement RMI 
-Consider Singleton for the list of students
