@@ -12,8 +12,6 @@ import java.util.List;
 @SuppressWarnings("serial")
 public class StudentGUI extends JFrame implements ActionListener, StudentView  {
 	
-	//private StudentController studentController;
-
 	Container cp;
 	GridBagLayout gridBag = new GridBagLayout();
 	GridBagConstraints c = new GridBagConstraints();
@@ -38,6 +36,8 @@ public class StudentGUI extends JFrame implements ActionListener, StudentView  {
 	public StudentGUI(StudentController studentController) throws RemoteException {
 		setTitle("Natalia Palej A0027959");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		
 
 		// All the GUI layouts, buttons etc in a separate method to make it more readable 
         setupGUI();
@@ -98,12 +98,20 @@ public class StudentGUI extends JFrame implements ActionListener, StudentView  {
 		cp.setBackground(Color.white);
 		c.fill = GridBagConstraints.HORIZONTAL;
 		
+		// Picutre
+		JLabel iconLabel = new JLabel();
+		ImageIcon pic = new ImageIcon("\\C:\\Users\\Palej\\OneDrive\\Desktop\\Software Design with AI for Cloud\\Year_3\\software-dev-labs3\\Assessment\\java-project3\\image.jpg");
+		iconLabel.setIcon(pic);
+		c.gridx = 10;
+        c.gridy = 0; 
+        gridBag.setConstraints(iconLabel, c);
+        cp.add(iconLabel);
+		
 		// Title
 		title.setFont(new Font("Arial", Font.PLAIN, 30));
         c.gridx = 1;
         c.gridy = 1;
-        // span over 4 columns
-        c.gridwidth = 10; 
+        c.gridwidth = 10; // Span over 10 columns
         gridBag.setConstraints(title, c);
         cp.add(title);
         
@@ -358,8 +366,7 @@ public class StudentGUI extends JFrame implements ActionListener, StudentView  {
 	        float grade4Text = Float.parseFloat(grade4.getText());
 
 	        // ADd new Student
-	        Student newStudent = new Student(idText, nameText, surnameText, addressText, courseText, 
-	        									grade1Text, grade2Text, grade3Text, grade4Text);
+	        Student newStudent = new Student(idText, nameText, surnameText, addressText, courseText, grade1Text, grade2Text, grade3Text, grade4Text);
 	        StudentController.getInstance().add(newStudent);
 
 	        // showMessageDialog to notify user
