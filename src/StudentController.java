@@ -2,38 +2,42 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class StudentController {
+@SuppressWarnings("serial")
+public class StudentController extends UnicastRemoteObject implements StudentService  {
 	private List<Student> studentList;
 	// Declare singleton instance
 	private static StudentController instance;
 	
-    public StudentController() {
+    public StudentController() throws RemoteException {
+    	super();
     	this.studentList = deserialiseStudents();
     }
     
-    public StudentController(List<Student> studentList) {
-        this.studentList = studentList;
-    }
-    
-    public StudentController(List<Student> studentList, StudentGUI studentGUI) {
+    public StudentController(List<Student> studentList) throws RemoteException {
         this.studentList = studentList;
     }
 
-    public void add(Student student) {
+    @Override
+    public void add(Student student) throws RemoteException {
         studentList.add(student);
+        instance.serialiseStudents(studentList);
     }
 
-    public void delete(String name) {
+    @Override
+    public void delete(String name) throws RemoteException {
     	Iterator<Student> iterator = studentList.iterator();
 
         while (iterator.hasNext()) {
             Student student = iterator.next();
             if (student.getName().equalsIgnoreCase(name) || student.getId().equalsIgnoreCase(name)) {
                 iterator.remove();
+                instance.serialiseStudents(studentList);
                 System.out.println("StudentController delete(): Student " + student.getName() + " was deleted.");
             }
         }
@@ -42,17 +46,20 @@ public class StudentController {
         }
     }
 
-    public void update(Student studentToUpdate, Student updatedStudent) {
+    @Override
+    public void update(Student studentToUpdate, Student updatedStudent) throws RemoteException {
     	for (int i=0; i<studentList.size(); i++) {
     		if (studentToUpdate.getId().equals(studentList.get(i).getId()) || studentToUpdate.getName().equals(studentList.get(i).getName())) {
     			studentList.set(i, updatedStudent);
+    			instance.serialiseStudents(studentList);
                 return;
     		}
     	}
     	System.out.println("update(): Student not found in the list.");
     }
     
-    public String getAll() {
+    @Override
+    public String getAll() throws RemoteException {
     	StringBuilder result = new StringBuilder();
         for (Student student : studentList) {
             result.append(student.printDetails());
@@ -64,7 +71,8 @@ public class StudentController {
     	return studentList;
     }
 
-    public Student getByName(String name) {
+    @Override
+    public Student getByName(String name) throws RemoteException {
         for (Student student : studentList) {
             if (student.getName().equals(name)) {
                 return student;
@@ -73,7 +81,8 @@ public class StudentController {
         return null;
     }
 
-    public Student getByID(String id) {
+    @Override
+    public Student getByID(String id) throws RemoteException {
         for (Student student : studentList) {
         	if (student.getId().equals(id)) {
         		return student;
@@ -94,10 +103,6 @@ public class StudentController {
 		students.add(new Student("7", "Kuba", "Kubowski", "Monksland", "Bachelor of Mechanics", 71, 68, 78, 83));
 		return students;
     }
-
-    public List<Student> getStudentList() {
-        return studentList;
-    }
     
     // Serialise Method
  	public void serialiseStudents(List<Student> students) {
@@ -112,6 +117,7 @@ public class StudentController {
  			}
  			objOut.close();
  			fileOut.close();
+ 			System.out.println("serialiseStudents(): File successfully serialized");
  		} catch (Exception e) {
  			System.out.println("Exception cought.\n");
  			e.printStackTrace();
@@ -137,6 +143,7 @@ public class StudentController {
              }
  			objIn.close();
  			fileIn.close();
+ 			System.out.println("deserialiseStudents(): File successfully deserialized");
  		} catch (Exception e) {
  			System.out.println("Couldn't deserialize the file!");
  			e.printStackTrace();
@@ -145,8 +152,7 @@ public class StudentController {
  	}
  	
  	// Singleton pattern ensuring only one sintance of studentList is in use 
- 	// Problem: getALL keeps returning the same list when the app was ran even if the list was updated
- 	public static StudentController getInstance() {
+ 	public static StudentController getInstance() throws RemoteException {
         if (instance == null) {
             instance = new StudentController();
             System.out.println("getInstance(): Created instance of StudentController.");
