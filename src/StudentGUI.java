@@ -38,8 +38,6 @@ public class StudentGUI extends JFrame implements ActionListener, StudentView  {
 	public StudentGUI(StudentController studentController) throws RemoteException {
 		setTitle("Natalia Palej A0027959");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		
 
 		// All the GUI layouts, buttons etc in a separate method to make it more readable 
         setupGUI();
@@ -161,8 +159,10 @@ public class StudentGUI extends JFrame implements ActionListener, StudentView  {
         // Create table model with column names
         tableModel = new DefaultTableModel();
         tableModel.setColumnIdentifiers(new String[]{"ID", "Name", "Surname", "Address", "Course", "Grade1", "Grade2", "Grade3", "Grade4", "GPA"});       
+        
         // Create JTable with the table model
         studentTable = new JTable(tableModel);
+        
         // Adjust column size
         studentTable.getColumnModel().getColumn(0).setPreferredWidth(5);
         studentTable.getColumnModel().getColumn(1).setPreferredWidth(80);
@@ -174,6 +174,7 @@ public class StudentGUI extends JFrame implements ActionListener, StudentView  {
         studentTable.getColumnModel().getColumn(7).setPreferredWidth(30);
         studentTable.getColumnModel().getColumn(8).setPreferredWidth(30);
         studentTable.getColumnModel().getColumn(9).setPreferredWidth(40);
+        
         // Add the table to a scroll pane and adjust size
         JScrollPane scrollPane = new JScrollPane(studentTable);
         scrollPane.setPreferredSize(new Dimension(700, 400));
@@ -287,8 +288,8 @@ public class StudentGUI extends JFrame implements ActionListener, StudentView  {
         
         if (!studentList.isEmpty()) {
         	showAllStudents();
-        	showSuccessMessage("List of all students");
-            System.out.println("\"success\" : getAll()" + StudentController.getInstance().getAll());
+        	showMessage("success : List of all students");
+            showSuccessMessage("getAll()" + StudentController.getInstance().getAll());
         } else {
         	showErrorMessage("getAll() List not found or empty. Cannot Deserialize!");
         }

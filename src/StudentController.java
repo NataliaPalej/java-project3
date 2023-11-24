@@ -2,6 +2,7 @@
  * author @NataliaPalej A00279259
  */
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
@@ -20,7 +21,13 @@ public class StudentController extends UnicastRemoteObject implements StudentSer
 	
     public StudentController() throws RemoteException {
     	super();
-    	this.studentList = deserialiseStudents();
+    	File file = new File("students.ser");
+    	if (file.exists()) {
+    		this.studentList = deserialiseStudents();
+    	} else {
+    		this.studentList = studentList();
+    		serialiseStudents(studentList);
+    	}
     }
     
     public StudentController(List<Student> studentList) throws RemoteException {
@@ -155,7 +162,7 @@ public class StudentController extends UnicastRemoteObject implements StudentSer
  		return students;
  	}
  	
- 	// Singleton pattern ensuring only one sintance of studentList is in use 
+ 	// Singleton pattern ensuring only one sintance is in use 
  	public static StudentController getInstance() throws RemoteException {
         if (instance == null) {
             instance = new StudentController();

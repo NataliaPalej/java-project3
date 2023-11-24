@@ -12,7 +12,7 @@ public class StudentServer {
 		try {
 			// Creating instance of remote StudentController object 
 			StudentController studentController = new StudentController();
-			// Creating registry on the localhost and default RMI port of 1099
+			// Creating registry on localhost and default RMI port of 1099
 			Registry registry = LocateRegistry.createRegistry(1099);
 			// Bind remote into the registry
 			registry.bind("StudentService", studentController);
