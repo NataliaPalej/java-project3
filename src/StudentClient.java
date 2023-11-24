@@ -27,15 +27,6 @@ public class StudentClient {
 		} catch (Exception e) {
 			System.out.println("\nStudentClient: Couldn't start client");
 			e.printStackTrace();
-		} finally {
-			// Close registry
-			try {
-                if (registry != null) {
-                    LocateRegistry.getRegistry().unbind("StudentService");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
 		}
 	}
 }
