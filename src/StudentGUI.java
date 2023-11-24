@@ -12,7 +12,7 @@ import java.util.List;
 
 
 @SuppressWarnings("serial")
-public class StudentGUI extends JFrame implements ActionListener, StudentView  {
+public class StudentGUI extends JFrame implements ActionListener, StudentInterface  {
 	
 	Container cp;
 	GridBagLayout gridBag = new GridBagLayout();
@@ -86,6 +86,8 @@ public class StudentGUI extends JFrame implements ActionListener, StudentView  {
 			delete();
 		} else if (e.getSource().equals(exitBtn)) {
 			System.out.println("\nactionPerformed(): EXIT button clicked.");
+			// Close the app
+			System.exit(0);
 		} else {
 			System.out.println("\nactionPerformed(): No action available");
 		}
@@ -289,7 +291,7 @@ public class StudentGUI extends JFrame implements ActionListener, StudentView  {
         if (!studentList.isEmpty()) {
         	showAllStudents();
         	showMessage("success : List of all students");
-            showSuccessMessage("getAll()" + StudentController.getInstance().getAll());
+            System.out.println("success : getAll()" + StudentController.getInstance().getAll());
         } else {
         	showErrorMessage("getAll() List not found or empty. Cannot Deserialize!");
         }

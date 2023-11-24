@@ -2,19 +2,14 @@
  * author @NataliaPalej A00279259
  */
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 @SuppressWarnings("serial")
 public class StudentController extends UnicastRemoteObject implements StudentService  {
+	
 	private List<Student> studentList;
 	// Declare singleton instance
 	private static StudentController instance;

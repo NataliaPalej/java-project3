@@ -4,7 +4,7 @@
 
 import java.rmi.RemoteException;
 
-public interface StudentView {
+public interface StudentInterface {
 	void showAllStudents() throws RemoteException;
 	void showStudentDetails(Student student) throws RemoteException;
     void showMessage(String message);
