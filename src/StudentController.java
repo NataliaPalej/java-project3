@@ -8,9 +8,11 @@ import java.util.List;
 
 public class StudentController {
 	private List<Student> studentList;
-
+	// Declare singleton instance
+	private static StudentController instance;
+	
     public StudentController() {
-    	this.studentList = studentList();
+    	this.studentList = deserialiseStudents();
     }
     
     public StudentController(List<Student> studentList) {
@@ -53,10 +55,13 @@ public class StudentController {
     public String getAll() {
     	StringBuilder result = new StringBuilder();
         for (Student student : studentList) {
-            System.out.println(student.printDetails());
             result.append(student.printDetails());
         }
         return result.toString();
+    }
+    
+    public List<Student> getAllStudents() {
+    	return studentList;
     }
 
     public Student getByName(String name) {
@@ -138,4 +143,14 @@ public class StudentController {
  		}
  		return students;
  	}
+ 	
+ 	// Singleton pattern ensuring only one sintance of studentList is in use 
+ 	// Problem: getALL keeps returning the same list when the app was ran even if the list was updated
+ 	public static StudentController getInstance() {
+        if (instance == null) {
+            instance = new StudentController();
+            System.out.println("getInstance(): Created instance of StudentController.");
+        }
+        return instance;
+    }
 }

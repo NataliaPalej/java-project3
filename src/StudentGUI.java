@@ -11,7 +11,7 @@ import java.util.List;
 @SuppressWarnings("serial")
 public class StudentGUI extends JFrame implements ActionListener, StudentView  {
 	
-	private StudentController studentController;
+	//private StudentController studentController;
 
 	Container cp;
 	GridBagLayout gridBag = new GridBagLayout();
@@ -35,11 +35,9 @@ public class StudentGUI extends JFrame implements ActionListener, StudentView  {
     DefaultTableModel tableModel;
 	
 	public StudentGUI(StudentController studentController) {
-		this.studentController = studentController;
-		
 		// Set initial data for the list
 		List<Student> studentList = getStudentList();
-        this.studentController = new StudentController(studentList);
+        studentController = new StudentController(studentList);
 		
 		setTitle("Natalia Palej A0027959");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -140,14 +138,7 @@ public class StudentGUI extends JFrame implements ActionListener, StudentView  {
         c.gridwidth = 10;
         gridBag.setConstraints(emptyField, c);
         cp.add(emptyField);
-        
-        // Empty space for student list
-        //c.gridx = 1;
-        //c.gridy = 6;
-        //c.gridwidth = 4;
-        //gridBag.setConstraints(studentListField, c);
-        //cp.add(studentListField);
-        
+              
         // Create table model with column names
         tableModel = new DefaultTableModel();
         tableModel.setColumnIdentifiers(new String[]{"ID", "Name", "Surname", "Address", "Course", "Grade1", "Grade2", "Grade3", "Grade4", "GPA"});       
@@ -229,7 +220,6 @@ public class StudentGUI extends JFrame implements ActionListener, StudentView  {
         updateBtn.setPreferredSize(buttonSize);
         deleteBtn.setPreferredSize(buttonSize);
         exitBtn.setPreferredSize(buttonSize);
-        //studentListField.setPreferredSize(new Dimension(500, 500));
         
         // Add margin
         JLabel topMargin = new JLabel(" ");
@@ -268,7 +258,7 @@ public class StudentGUI extends JFrame implements ActionListener, StudentView  {
 	
 	// Call deserialiseStudents method from StudentController 
 	public List<Student> getStudentList() {
-		return studentController.deserialiseStudents();
+		return StudentController.getInstance().deserialiseStudents();
 	}
 	
 	// Separate methods for CRUD operations handling
@@ -277,11 +267,9 @@ public class StudentGUI extends JFrame implements ActionListener, StudentView  {
 		List<Student> studentList = getStudentList();
         
         if (!studentList.isEmpty()) {
-        	// Clear existing student list
-        	clearTable();
-        	showAllStudents(studentList);
+        	showAllStudents();
         	showSuccessMessage("List of all students");
-            System.out.println("\"success\" : getAll() \n" + studentController.getAll());
+            System.out.println("\"success\" : getAll() \n" + StudentController.getInstance().getAll());
         } else {
         	showErrorMessage("getAll() List not found or empty. Cannot Deserialize!");
         }
@@ -291,7 +279,7 @@ public class StudentGUI extends JFrame implements ActionListener, StudentView  {
 		// Get the text from the selectStudent text field
 		String searchStudent = searchInput.getText();
 		try {
-			Student student = studentController.getByID(searchStudent);
+			Student student = StudentController.getInstance().getByID(searchStudent);
 			showSuccessMessage("Student " + student.getId() + " " + student.getName() + " successfully fetched");
 			showStudentDetails(student);
 		} catch (Exception e) {
@@ -305,7 +293,7 @@ public class StudentGUI extends JFrame implements ActionListener, StudentView  {
 		// Get the text from the selectStudent text field
 		String searchStudent = searchInput.getText();
 		try {
-			Student student = studentController.getByName(searchStudent);
+			Student student = StudentController.getInstance().getByName(searchStudent);
 			showSuccessMessage("Student " + searchStudent + " successfully fetched");		
 			showStudentDetails(student);
 		} catch (Exception e) {
@@ -315,9 +303,7 @@ public class StudentGUI extends JFrame implements ActionListener, StudentView  {
 		
 	}
 	
-	private void add() {
-		List<Student> studentList = getStudentList();
-		
+	private void add() {		
 		// Create input fields for a new student
 		JTextField id = new JTextField(10);
 		JTextField name = new JTextField(10);
@@ -343,7 +329,7 @@ public class StudentGUI extends JFrame implements ActionListener, StudentView  {
 				"Grade4: ", grade4
 		};
 		
-		// Show the input dialog and get the user's input
+		// Show the input window and get the user input
 	    int result = JOptionPane.showConfirmDialog(null, fields, "Add Student", JOptionPane.OK_CANCEL_OPTION);
 	    
 	    // Check if the user clicked OK
@@ -364,13 +350,13 @@ public class StudentGUI extends JFrame implements ActionListener, StudentView  {
 
 	        // ADd new Student
 	        Student newStudent = new Student(idText, nameText, surnameText, addressText, courseText, 
-	        		grade1Text, grade2Text, grade3Text, grade4Text);
-	        studentController.add(newStudent);
+	        									grade1Text, grade2Text, grade3Text, grade4Text);
+	        StudentController.getInstance().add(newStudent);
 
 	        // showMessageDialog to notify user
 	        JOptionPane.showMessageDialog(null, "Student " + nameText + " added successfully!");
 	        showSuccessMessage("Student " + nameText + " added successfully!");
-	        showAllStudents(studentList);
+	        showAllStudents();
 	    } else if (result == JOptionPane.OK_CANCEL_OPTION) {
 	    	System.out.println("add(): Add new student cancelled.");
 	    	showSuccessMessage("Add new student successfully cancelled.");
@@ -446,7 +432,7 @@ public class StudentGUI extends JFrame implements ActionListener, StudentView  {
                         grade4Text
                 );
 
-	            studentController.update(studentToUpdate, updatedStudent);
+                StudentController.getInstance().update(studentToUpdate, updatedStudent);
 
 	            // Show message dialog
 	            JOptionPane.showMessageDialog(null, "Student " + updateStudent + " was updated successfully!");
@@ -477,15 +463,14 @@ public class StudentGUI extends JFrame implements ActionListener, StudentView  {
 	
 	private void delete() {
 		String deleteStudent = searchInput.getText();
-		List<Student> studentList = getStudentList();
 		try {
 			int result = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete " + deleteStudent + "?");
 			if (result == JOptionPane.YES_OPTION) {
-				studentController.delete(deleteStudent);
+				StudentController.getInstance().delete(deleteStudent);
 				JOptionPane.showMessageDialog(null, "Student " + deleteStudent + " deleted successfully!");
 				showSuccessMessage("Student " + deleteStudent + " was successfully deleted.");
 				clearTable();
-				showAllStudents(studentList);
+				showAllStudents();
 			} else if (result == JOptionPane.NO_OPTION) {
 				showSuccessMessage("Delete student cancelled.");
 			} 			
@@ -496,12 +481,13 @@ public class StudentGUI extends JFrame implements ActionListener, StudentView  {
 	}
 	
 	private void clearTable() {
+		System.out.println("clearTable(): clearTable run");
 		tableModel.setRowCount(0);
 	}
 	
 	// Initialize student controller
-	public void setStudentController(StudentController studentController) {
-	    this.studentController = studentController;
+	public void setStudentController() {
+		StudentController.getInstance();
 	}
 	
 	public void run() {
@@ -510,7 +496,8 @@ public class StudentGUI extends JFrame implements ActionListener, StudentView  {
     }
 	
 	@Override
-	public void showAllStudents(List<Student> studentList) {
+	public void showAllStudents() {
+		List<Student> studentList = StudentController.getInstance().getAllStudents();
 		// Clear existing rows in the table
 	    clearTable();
 	    // Loop through the list and add students to the table

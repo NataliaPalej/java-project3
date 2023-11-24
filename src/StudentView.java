@@ -1,7 +1,7 @@
 import java.util.List;
 
 public interface StudentView {
-	void showAllStudents(List<Student> studentList);
+	void showAllStudents();
 	void showStudentDetails(Student student);
     void showMessage(String message);
     void showSuccessMessage(String message);

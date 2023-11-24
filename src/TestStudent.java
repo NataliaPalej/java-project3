@@ -9,7 +9,8 @@ public class TestStudent {
 		// Create array to store students in (using initial data created in StudentController)
         List<Student> studentList = StudentController.studentList();
 		
-        StudentController studentController = new StudentController();
+        // getInstance() to get singleton instance of StudentController
+        StudentController studentController = StudentController.getInstance();
         StudentGUI studentGUI = new StudentGUI(studentController);
 
 		try {
@@ -34,7 +35,7 @@ public class TestStudent {
 		System.out.println("\n--------------------------------------------------------------------------------------------------------------------\n");
 		
 		// Set the controller for the GUI
-        studentGUI.setStudentController(studentController);
+        studentGUI.setStudentController();
         System.out.println("setStudentController(): Student Controller Set");
 
         // Start your application
