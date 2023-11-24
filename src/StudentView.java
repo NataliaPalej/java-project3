@@ -1,8 +1,8 @@
-import java.util.List;
+import java.rmi.RemoteException;
 
 public interface StudentView {
-	void showAllStudents();
-	void showStudentDetails(Student student);
+	void showAllStudents() throws RemoteException;
+	void showStudentDetails(Student student) throws RemoteException;
     void showMessage(String message);
     void showSuccessMessage(String message);
     void showErrorMessage(String message);
