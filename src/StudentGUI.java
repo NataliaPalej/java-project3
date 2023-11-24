@@ -4,6 +4,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.rmi.RemoteException;
 import java.util.List;
 
 // Natalia Palej A00279259
@@ -33,12 +34,8 @@ public class StudentGUI extends JFrame implements ActionListener, StudentView  {
 	
 	JTable studentTable;
     DefaultTableModel tableModel;
-	
-	public StudentGUI(StudentController studentController) {
-		// Set initial data for the list
-		List<Student> studentList = getStudentList();
-        studentController = new StudentController(studentList);
-		
+    
+	public StudentGUI(StudentController studentController) throws RemoteException {
 		setTitle("Natalia Palej A0027959");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -59,7 +56,11 @@ public class StudentGUI extends JFrame implements ActionListener, StudentView  {
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(getAllBtn)) {
 			System.out.println("\nactionPerformed(): GET ALL button clicked.");
-			getAll();
+			try {
+				getAll();
+			} catch (RemoteException e1) {
+				e1.printStackTrace();
+			}
 		} else if (e.getSource().equals(getByIDBtn)) {
 			System.out.println("\nactionPerformed(): GET BY ID button clicked.");
 			getByID();
@@ -68,10 +69,18 @@ public class StudentGUI extends JFrame implements ActionListener, StudentView  {
 			getByName();
 		} else if (e.getSource().equals(addBtn)) {
 			System.out.println("\nactionPerformed(): ADD button clicked.");
-			add();
+			try {
+				add();
+			} catch (RemoteException e1) {
+				e1.printStackTrace();
+			}
 		} else if (e.getSource().equals(updateBtn)) {
 			System.out.println("\nactionPerformed(): UPDATE button clicked.");
-			update();
+			try {
+				update();
+			} catch (RemoteException e1) {
+				e1.printStackTrace();
+			}
 		} else if (e.getSource().equals(deleteBtn)) {
 			System.out.println("\nactionPerformed(): DELETE button clicked.");
 			delete();
@@ -257,19 +266,19 @@ public class StudentGUI extends JFrame implements ActionListener, StudentView  {
 	}
 	
 	// Call deserialiseStudents method from StudentController 
-	public List<Student> getStudentList() {
+	public List<Student> getStudentList() throws RemoteException {
 		return StudentController.getInstance().deserialiseStudents();
 	}
 	
 	// Separate methods for CRUD operations handling
-	private void getAll() {
+	private void getAll() throws RemoteException {
 		// Retrieve list of students from the controller
 		List<Student> studentList = getStudentList();
         
         if (!studentList.isEmpty()) {
         	showAllStudents();
         	showSuccessMessage("List of all students");
-            System.out.println("\"success\" : getAll() \n" + StudentController.getInstance().getAll());
+            System.out.println("\"success\" : getAll()" + StudentController.getInstance().getAll());
         } else {
         	showErrorMessage("getAll() List not found or empty. Cannot Deserialize!");
         }
@@ -303,7 +312,7 @@ public class StudentGUI extends JFrame implements ActionListener, StudentView  {
 		
 	}
 	
-	private void add() {		
+	private void add() throws RemoteException {		
 		// Create input fields for a new student
 		JTextField id = new JTextField(10);
 		JTextField name = new JTextField(10);
@@ -363,7 +372,7 @@ public class StudentGUI extends JFrame implements ActionListener, StudentView  {
 	    }	
 	}
 	
-	private void update() {
+	private void update() throws RemoteException {
 		String updateStudent = searchInput.getText();
 		List<Student> studentList = getStudentList();
 		
@@ -481,22 +490,21 @@ public class StudentGUI extends JFrame implements ActionListener, StudentView  {
 	}
 	
 	private void clearTable() {
-		System.out.println("clearTable(): clearTable run");
 		tableModel.setRowCount(0);
 	}
 	
 	// Initialize student controller
-	public void setStudentController() {
+	public void setStudentController() throws RemoteException {
 		StudentController.getInstance();
 	}
 	
-	public void run() {
+	public void run() throws RemoteException {
         getAll();
         setVisible(true);
     }
 	
 	@Override
-	public void showAllStudents() {
+	public void showAllStudents() throws RemoteException {
 		List<Student> studentList = StudentController.getInstance().getAllStudents();
 		// Clear existing rows in the table
 	    clearTable();
@@ -518,7 +526,7 @@ public class StudentGUI extends JFrame implements ActionListener, StudentView  {
 	}
 
 	@Override
-	public void showStudentDetails(Student student) {
+	public void showStudentDetails(Student student) throws RemoteException {
 		List<Student> studentList = getStudentList();
 		if (studentList.isEmpty()) {
 	        System.out.println("showStudentDetails(): Student list is empty.");
@@ -526,9 +534,9 @@ public class StudentGUI extends JFrame implements ActionListener, StudentView  {
 		} else { 
 			if (student != null) {
 	            System.out.println("showStudentDetails(): Student " + student.getId() + " " + student.getName() + " in the list");
-	            System.out.println(student.getStudentDetails());
 	            showSuccessMessage("Student " + student.getId() + " was successfully found.");
 	            clearTable();
+	            System.out.println(student.getStudentDetails());
 	            tableModel.addRow(new Object[]{
 	                    student.getId(),
 	                    student.getName(),
